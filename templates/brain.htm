@@ -17,6 +17,7 @@
         }
         /* 主畫布 */
         #canvas {
+            position: fixed;
             cursor: pointer; /* 保持鼠標 */
             background: transparent; /* 背景透明 */
         }
@@ -58,18 +59,21 @@
         #contextMenu > div:hover {
             background-color: grey;
         }
-
-        #contextMenu > .changeMode {
+        #changeshape {
+            /**/
+        }
+        #changeshape {
             /**/
         }
         </style>
         <script src="{{ url_for('static', filename='jquery-2.2.0.js') }}"></script>
-    </head>
+        <link href="{{ url_for('static', filename='bootstrap.min.css') }}" rel="stylesheet">
+        <link href="{{ url_for('static', filename='css/bootstrap-colorpicker.min.css') }}" rel="stylesheet">
 
+    </head>
     <body background="{{ url_for('static', filename='blackboard.gif') }}"><!-- blackboard.gif -->
-        <canvas id="canvas">
-            你的瀏覽器不支援Canvas。<!-- onmousedown="mousedownHandler(event)" onmousemove="mousemoveHandler(event)" onmouseup="mouseupHandler(event)" -->
-        </canvas>
+        <canvas id="canvas">你的瀏覽器不支援Canvas。</canvas>
+        <canvas id="canvas2">你的瀏覽器不支援Canvas。</canvas>
         <div id="preview"></div>
         <div id="contextMenu">
             <div id="changemode" class="changeMode">模式:正常</div>
@@ -77,7 +81,6 @@
             <div onmousedown="changeWidth();">寬度</div>
             <div onmousedown="changeColor();">顏色</div>
             <div onmousedown="clearCanvas();">清空</div>
-            <div onmousedown="upload();">上傳</div>
 
         </div>
         <script type="text/javascript">
@@ -95,9 +98,12 @@
         var canvasEraser = false;
         var canvashistory = new Array();
         var canvasstep = -1;
-        var rid = "123";
-        var uid = "1";
+        var rid = location.pathname.replace("/b/", "");
+        var uid = JSON.parse(localStorage.getItem("Write's Brain")).uid;
         window.onload = function() {
+            uid = JSON.parse(localStorage.getItem("Write's Brain")).uid;
+            uid = uid == "" ? prompt('ID:') : uid;
+            localStorage.setItem("Write's Brain", JSON.stringify({rid : rid, uid : uid}));
             context = canvas.getContext('2d');
             // window.addEventListener('keydown', doKeyDown, true);
             resize();
@@ -288,7 +294,7 @@
             if (canvasstep >= 0) {
                 context.putImageData(canvashistory[canvasstep], 0, 0);
             }
-
+            upload();
         }
         // 下一步
         function redo() {
@@ -317,12 +323,13 @@
                 var y3 = previouspoint.y - acos;
                 var x4 = previouspoint.x - asin;
                 var y4 = previouspoint.y + acos;
+
                 var x5 = _x + asin;
                 var y5 = _y - acos;
                 var x6 = _x - asin;
                 var y6 = _y + acos;
 
-                // //清除矩形剪辑区域里的像素
+                // //清除兩點間矩形內容
                 context.save()
                 context.beginPath()
                 context.moveTo(x3, y3);
@@ -330,15 +337,16 @@
                 context.lineTo(x6, y6);
                 context.lineTo(x4, y4);
                 context.closePath();
-                context.clip()
+                context.clip();
                 clearCanvas();
                 context.restore();
 
-                //保证线条的连贯，所以在矩形一端画圆
+                // 清除當下點
                 context.save()
                 context.beginPath()
-                context.arc(_x, _y, _size, 0, 2*Math.PI);
-                context.clip()
+                context.arc(_x, _y, _size, 0, 2 * Math.PI);
+                context.closePath();
+                context.clip();
                 clearCanvas();
                 context.restore();
             }
@@ -348,7 +356,7 @@
             var keyID = e.keyCode ? e.keyCode : e.which;
             console.log(keyID);
             if (keyID == 116) { // F5
-                clearCanvas();
+                initCanvas();
                 e.preventDefault();
             } else if (keyID == 123) { // F12
                 // prompt('請輸入主控台密碼(誤)：')
