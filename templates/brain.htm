@@ -66,7 +66,7 @@
         <script src="{{ url_for('static', filename='jquery-2.2.0.js') }}"></script>
     </head>
 
-    <body background="{{ url_for('static', filename='blackboard.gif') }}">
+    <body background="{{ url_for('static', filename='blackboard.gif') }}"><!-- blackboard.gif -->
         <canvas id="canvas">
             你的瀏覽器不支援Canvas。<!-- onmousedown="mousedownHandler(event)" onmousemove="mousemoveHandler(event)" onmouseup="mouseupHandler(event)" -->
         </canvas>
@@ -77,6 +77,7 @@
             <div onmousedown="changeWidth();">寬度</div>
             <div onmousedown="changeColor();">顏色</div>
             <div onmousedown="clearCanvas();">清空</div>
+            <div onmousedown="upload();">上傳</div>
 
         </div>
         <script type="text/javascript">
@@ -91,15 +92,23 @@
         var lineWidth = 5;
         var lineColor = "red";
         var startpoint = {x : 0, y : 0};
-
+        var previouspoint = {x : 0, y : 0};
+        var canvasEraser = false;
         var canvashistory = new Array();
         var canvasstep = -1;
-
         window.onload = function() {
             context = canvas.getContext('2d');
             // window.addEventListener('keydown', doKeyDown, true);
             resize();
+            initCanvas();
         };
+        function initCanvas(uid) {
+            var img = new Image;
+            img.onload = function(){
+                context.drawImage(img, 0, 0); // Or at whatever offset you like
+            };
+            img.src = '/room/123_0.png';
+        }
         window.onresize = function() {
             resize();
         };
@@ -149,9 +158,12 @@
                 contextMenu.style.display = "none";
 
             }
-            if ((e.button == 0) && (e.toElement == canvas)) {
-                startpoint.x = e.clientX;
-                startpoint.y = e.clientY;
+            startpoint.x = e.clientX;
+            startpoint.y = e.clientY;
+            if (canvasEraser){
+                previouspoint = startpoint;
+                paint = true;
+            } else if ((e.button == 0) && (e.toElement == canvas)) {
                 // cross(startpoint.x, startpoint.y, lineWidth);
                 context.beginPath();
                 context.strokeStyle = lineColor; // 'blue'
@@ -177,7 +189,13 @@
             }
         }
         document.onmousemove = function mousemoveHandler(e) {
-            if (paint) {
+            if (canvasEraser && paint) {
+                if (previouspoint.x != 0 && previouspoint.y != 0) {
+                    eraser(e.clientX, e.clientY, lineWidth);
+                }
+                // eraser(e.clientX, e.clientY, lineWidth);
+                previouspoint = {x : e.clientX, y : e.clientY};
+            } else  if (paint) {
                 if (line) {
                     var ab = Math.sqrt(Math.pow(e.clientX - startpoint.x, 2) + Math.pow(e.clientY - startpoint.y, 2))+ lineWidth;
                     rad = Math.atan((startpoint.y - e.clientY) / (startpoint.x - e.clientX));
@@ -218,6 +236,23 @@
             contextMenu.style.top = (e.clientY - contextMenu.offsetHeight / 2) + "px";
             e.preventDefault();
         }
+        function upload() {
+            $.ajax({
+                url: '/upload',
+                data: {
+                    room_id : 123,
+                    user_id : 0,
+                    DataURL : canvas.toDataURL()
+                },
+                type: 'POST',
+                success: function(response) {
+                    console.log(response);
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+        }
         // 畫十字(debug)
         function cross(x, y, size) {
             context.beginPath();
@@ -237,6 +272,7 @@
             }
             canvashistory.push(context.getImageData(0, 0,canvas.width, canvas.height));
             console.log("步驟" + (canvasstep + 1));
+            upload();
             // console.dir(canvashistory);
         }
         // 上一步
@@ -271,6 +307,45 @@
         function clearCanvas() {
             context.clearRect(0, 0, canvas.width, canvas.height);
         }
+        // 橡皮擦
+        function eraser(_x, _y, _size) {
+            //获取两个点之间的剪辑区域四个端点
+            var asin = lineWidth * Math.sin(Math.atan((_x - previouspoint.y) / (_y - previouspoint.x)));
+            var acos = lineWidth * Math.cos(Math.atan((_x - previouspoint.y) / (_y - previouspoint.x)))
+            var x3 = previouspoint.x + asin;
+            var y3 = previouspoint.y - acos;
+            var x4 = previouspoint.x - asin;
+            var y4 = previouspoint.y + acos;
+            var x5 = _y + asin;
+            var y5 = _x - acos;
+            var x6 = _y - asin;
+            var y6 = _x + acos;
+
+            //保证线条的连贯，所以在矩形一端画圆
+            context.save()
+            context.beginPath()
+            context.arc(_y, _x, lineWidth, 0, 2*Math.PI);
+            context.clip()
+            clearCanvas();
+            context.restore();
+
+            //清除矩形剪辑区域里的像素
+            context.save()
+            context.beginPath()
+            context.moveTo(x3, y3);
+            context.lineTo(x5, y5);
+            context.lineTo(x6, y6);
+            context.lineTo(x4, y4);
+            context.closePath();
+            context.clip()
+            clearCanvas();
+            context.restore();
+
+            //记录最后坐标
+            previouspoint.x = _y;
+            previouspoint.y = _x;
+            // context.clearRect(_x - _size / 2, _y - _size / 2, _size, _size);
+        }
         // 鍵盤監控
         window.onkeydown = function doKeyDown(e) {
             var keyID = e.keyCode ? e.keyCode : e.which;
@@ -278,15 +353,17 @@
             if (keyID == 116) { // F5
                 clearCanvas();
                 e.preventDefault();
-
             } else if (keyID == 123) { // F12
-                prompt('請輸入主控台密碼(誤)：')
+                // prompt('請輸入主控台密碼(誤)：')
             } else if (keyID == 90 && e.ctrlKey) { // Ctrl + Z
                 undo();
                 e.preventDefault();
             } else if (keyID == 89 && e.ctrlKey) { // Ctrl + Y
                 redo();
                 e.preventDefault();
+            } else if (e.ctrlKey) {
+                canvasEraser = ! canvasEraser;
+                console.log(canvasEraser ? "啟用擦子" : "停用擦子");
             } else {
                 e.preventDefault();
             }
