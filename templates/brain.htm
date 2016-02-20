@@ -99,10 +99,10 @@
         var canvashistory = new Array();
         var canvasstep = -1;
         var rid = location.pathname.replace("/b/", "");
-        var uid = JSON.parse(localStorage.getItem("Write's Brain")).uid;
+        var uid;
         window.onload = function() {
-            uid = JSON.parse(localStorage.getItem("Write's Brain")).uid;
-            uid = uid == "" ? prompt('ID:') : uid;
+            if (localStorage.getItem("Write's Brain") != null) uid = JSON.parse(localStorage.getItem("Write's Brain")).uid;
+            uid = uid == undefined ? prompt('ID:') : uid;
             localStorage.setItem("Write's Brain", JSON.stringify({rid : rid, uid : uid}));
             context = canvas.getContext('2d');
             // window.addEventListener('keydown', doKeyDown, true);
@@ -110,7 +110,8 @@
             initCanvas();
         };
         function initCanvas() {
-            var img = new Image;
+            clearCanvas();
+            img = new Image();
             img.onload = function(){
                 context.drawImage(img, 0, 0); // Or at whatever offset you like
             };
