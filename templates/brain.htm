@@ -76,11 +76,12 @@
         <canvas id="canvas2">你的瀏覽器不支援Canvas。</canvas>
         <div id="preview"></div>
         <div id="contextMenu">
-            <div id="changemode" class="changeMode">模式:正常</div>
-            <div id="changeshape" class="changeShape">形狀:畫筆</div>
+            <div id="changemode" class="">模式:正常</div>
+            <div id="changeshape" class="">形狀:畫筆</div>
             <div onmousedown="changeWidth();">寬度</div>
             <div onmousedown="changeColor();">顏色</div>
             <div onmousedown="clearCanvas();">清空</div>
+            <div id="changeroom">更換房間</div>
 
         </div>
         <script type="text/javascript">
@@ -99,11 +100,11 @@
         var canvashistory = new Array();
         var canvasstep = -1;
         var rid = location.pathname.replace("/b/", "");
-        var uid;
+        var uid = {{ user_id }};
+        localStorage.setItem("Write's Brain", JSON.stringify({rid : rid, uid : uid}));
         window.onload = function() {
-            if (localStorage.getItem("Write's Brain") != null) uid = JSON.parse(localStorage.getItem("Write's Brain")).uid;
-            uid = uid == undefined ? prompt('ID:') : uid;
-            localStorage.setItem("Write's Brain", JSON.stringify({rid : rid, uid : uid}));
+            // if (localStorage.getItem("Write's Brain") != null) uid = JSON.parse(localStorage.getItem("Write's Brain")).uid;
+            // uid = uid == undefined ? prompt('ID:') : uid;
             context = canvas.getContext('2d');
             // window.addEventListener('keydown', doKeyDown, true);
             resize();
@@ -114,6 +115,7 @@
             img = new Image();
             img.onload = function(){
                 context.drawImage(img, 0, 0); // Or at whatever offset you like
+                img = null;
             };
             img.src = '/room/' + rid + '_' + uid + '.png';
         }
@@ -140,23 +142,29 @@
                 lineColor = _lineColor;
             }
         }
+        changeroom.onmousedown = function changeRoom() {
+            rid = prompt('房間ID:')
+            location.pathname = "/b/" + rid;
+            localStorage.setItem("Write's Brain", JSON.stringify({rid : rid, uid : uid}));
+        }
         changeshape.onmousedown = function changeShape() {
-            shape = (shape + 1) % 5; //模式(0~4)
-            shapeList = {
-                0 : "畫筆",
-                1 : "直線",
-                2 : "園",
-                3 : "多邊形",
-                4 : "矩形"
-            }
-            changeshape.textContent = "形狀:" + shapeList[mode];
+            shapeList = [
+                "畫筆",
+                "直線",
+                "園",
+                "多邊形",
+                "矩形",
+                "橡皮擦"
+            ]
+            shape = (shape + 1) % shapeList.length; //形狀(0~5)
+            changeshape.textContent = "形狀:" + shapeList[shape];
         }
         changemode.onmousedown = function changeMode() {
-            mode = (mode + 1) % 5; //模式(0~4)
             modeList = {
                 0 : "正常",
                 1 : "移動"
             }
+            mode = (mode + 1) % modeList.length; //模式(0~2)
             changemode.textContent = "模式:" + modeList[mode];
         }
         //滑鼠事件
@@ -194,6 +202,10 @@
                     }
                 }
             }
+        }
+        function checkStatus() {
+
+                Date.parse(Date()) < Date.parse("2016-02-20 18:33.00")
         }
         document.onmousemove = function mousemoveHandler(e) {
             if (leftbutton) {
@@ -357,8 +369,8 @@
             var keyID = e.keyCode ? e.keyCode : e.which;
             console.log(keyID);
             if (keyID == 116) { // F5
-                initCanvas();
-                e.preventDefault();
+                // initCanvas();
+                // e.preventDefault();
             } else if (keyID == 123) { // F12
                 // prompt('請輸入主控台密碼(誤)：')
             } else if (keyID == 90 && e.ctrlKey) { // Ctrl + Z
