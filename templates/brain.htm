@@ -83,11 +83,10 @@
         <script type="text/javascript">
         // console.group()
         var context;
-
         var mode = 0;//0:正常 1:移動地圖
         var status = 0;//
         var shape = 0;//0:畫筆 1:直線 2:圓形 3:多邊形 4:矩形 5:橡皮擦
-        var paint = false;
+        var leftbutton = false; //滑鼠左鍵是否按下
         var line = false;
         var lineWidth = 5;
         var lineColor = "red";
@@ -96,18 +95,20 @@
         var canvasEraser = false;
         var canvashistory = new Array();
         var canvasstep = -1;
+        var rid = "123";
+        var uid = "1";
         window.onload = function() {
             context = canvas.getContext('2d');
             // window.addEventListener('keydown', doKeyDown, true);
             resize();
             initCanvas();
         };
-        function initCanvas(uid) {
+        function initCanvas() {
             var img = new Image;
             img.onload = function(){
                 context.drawImage(img, 0, 0); // Or at whatever offset you like
             };
-            img.src = '/room/123_0.png';
+            img.src = '/room/' + rid + '_' + uid + '.png';
         }
         window.onresize = function() {
             resize();
@@ -154,16 +155,16 @@
         //滑鼠事件
         document.onmousedown = function mousedownHandler(e) {
             // console.dir(e);
+            leftbutton = e.button == 0
             if (contextMenu.style.display == "block") {
                 contextMenu.style.display = "none";
 
             }
             startpoint.x = e.clientX;
             startpoint.y = e.clientY;
-            if (canvasEraser){
+            if (leftbutton && canvasEraser){
                 previouspoint = startpoint;
-                paint = true;
-            } else if ((e.button == 0) && (e.toElement == canvas)) {
+            } else if (leftbutton && (e.toElement == canvas)) {
                 // cross(startpoint.x, startpoint.y, lineWidth);
                 context.beginPath();
                 context.strokeStyle = lineColor; // 'blue'
@@ -171,7 +172,6 @@
                 context.lineJoin = 'round'; //bevel:斜角 miter:尖角
                 context.lineCap = 'round'; //butt:平直 square:正方形
                 context.moveTo(startpoint.x, startpoint.y);
-            	paint = true;
                 if (e.shiftKey) {
                     line = true;
                     preview.class
@@ -189,38 +189,39 @@
             }
         }
         document.onmousemove = function mousemoveHandler(e) {
-            if (canvasEraser && paint) {
-                if (previouspoint.x != 0 && previouspoint.y != 0) {
+            if (leftbutton) {
+                if (canvasEraser) {
                     eraser(e.clientX, e.clientY, lineWidth);
-                }
-                // eraser(e.clientX, e.clientY, lineWidth);
-                previouspoint = {x : e.clientX, y : e.clientY};
-            } else  if (paint) {
-                if (line) {
-                    var ab = Math.sqrt(Math.pow(e.clientX - startpoint.x, 2) + Math.pow(e.clientY - startpoint.y, 2))+ lineWidth;
-                    rad = Math.atan((startpoint.y - e.clientY) / (startpoint.x - e.clientX));
-                    preview.style.width = ab + "px";
+                    previouspoint = {x : e.clientX, y : e.clientY};
+                } else {
+                    if (line) {
+                        var ab = Math.sqrt(Math.pow(e.clientX - startpoint.x, 2) + Math.pow(e.clientY - startpoint.y, 2))+ lineWidth;
+                        rad = Math.atan((startpoint.y - e.clientY) / (startpoint.x - e.clientX));
+                        preview.style.width = ab + "px";
 
-                    preview.style.margin = ((startpoint.x < e.clientX ? -lineWidth : lineWidth) * Math.sin(rad) - lineWidth) / 2 + "px " + (startpoint.x < e.clientX ? -lineWidth : lineWidth) * Math.cos(rad) / 2 + "px";
-                    // console.log(rad * 180 / Math.PI); //顯示角度
-                    preview.style.transform = "rotate(" + (rad + ((startpoint.x >= e.clientX) ? Math.PI : 0)) + "rad)";//rad
-                    return;
+                        preview.style.margin = ((startpoint.x < e.clientX ? -lineWidth : lineWidth) * Math.sin(rad) - lineWidth) / 2 + "px " + (startpoint.x < e.clientX ? -lineWidth : lineWidth) * Math.cos(rad) / 2 + "px";
+                        // console.log(rad * 180 / Math.PI); //顯示角度
+                        preview.style.transform = "rotate(" + (rad + ((startpoint.x >= e.clientX) ? Math.PI : 0)) + "rad)";//rad
+                        return;
+                    }
+                    var x = e.clientX;
+                    var y = e.clientY;
+                    context.lineTo(x, y);
+                    context.stroke();//繪製路徑
                 }
-                var x = e.clientX;
-                var y = e.clientY;
-                context.lineTo(x, y);
-                context.stroke();//繪製路徑
             }
         }
         document.onmouseup = function mouseupHandler(e) {
-            if (paint) {
-                context.lineTo(e.clientX, e.clientY);
-                context.stroke();//繪製路徑
-                context.closePath();
-                paint = false;
+            if (leftbutton) {
+                if (!canvasEraser) {
+                    context.lineTo(e.clientX, e.clientY);
+                    context.stroke();//繪製路徑
+                    context.closePath();
+                }
+                leftbutton = e.button != 0
                 if (line) {
-                    line = false;
                     preview.style.display = "none";
+                    line = false;
                 }
                 canvaspush();
             }
@@ -238,10 +239,9 @@
         }
         function upload() {
             $.ajax({
-                url: '/upload',
+                url: '/b/' + rid,
                 data: {
-                    room_id : 123,
-                    user_id : 0,
+                    user_id : uid,
                     DataURL : canvas.toDataURL()
                 },
                 type: 'POST',
@@ -309,42 +309,39 @@
         }
         // 橡皮擦
         function eraser(_x, _y, _size) {
-            //获取两个点之间的剪辑区域四个端点
-            var asin = lineWidth * Math.sin(Math.atan((_x - previouspoint.y) / (_y - previouspoint.x)));
-            var acos = lineWidth * Math.cos(Math.atan((_x - previouspoint.y) / (_y - previouspoint.x)))
-            var x3 = previouspoint.x + asin;
-            var y3 = previouspoint.y - acos;
-            var x4 = previouspoint.x - asin;
-            var y4 = previouspoint.y + acos;
-            var x5 = _y + asin;
-            var y5 = _x - acos;
-            var x6 = _y - asin;
-            var y6 = _x + acos;
+            if (previouspoint.x != 0 && previouspoint.y != 0) {
+                //获取两个点之间的剪辑区域四个端点
+                var asin = _size * Math.sin(Math.atan((_y - previouspoint.y) / (_x - previouspoint.x)));
+                var acos = _size * Math.cos(Math.atan((_y - previouspoint.y) / (_x - previouspoint.x)))
+                var x3 = previouspoint.x + asin;
+                var y3 = previouspoint.y - acos;
+                var x4 = previouspoint.x - asin;
+                var y4 = previouspoint.y + acos;
+                var x5 = _x + asin;
+                var y5 = _y - acos;
+                var x6 = _x - asin;
+                var y6 = _y + acos;
 
-            //保证线条的连贯，所以在矩形一端画圆
-            context.save()
-            context.beginPath()
-            context.arc(_y, _x, lineWidth, 0, 2*Math.PI);
-            context.clip()
-            clearCanvas();
-            context.restore();
+                // //清除矩形剪辑区域里的像素
+                context.save()
+                context.beginPath()
+                context.moveTo(x3, y3);
+                context.lineTo(x5, y5);
+                context.lineTo(x6, y6);
+                context.lineTo(x4, y4);
+                context.closePath();
+                context.clip()
+                clearCanvas();
+                context.restore();
 
-            //清除矩形剪辑区域里的像素
-            context.save()
-            context.beginPath()
-            context.moveTo(x3, y3);
-            context.lineTo(x5, y5);
-            context.lineTo(x6, y6);
-            context.lineTo(x4, y4);
-            context.closePath();
-            context.clip()
-            clearCanvas();
-            context.restore();
-
-            //记录最后坐标
-            previouspoint.x = _y;
-            previouspoint.y = _x;
-            // context.clearRect(_x - _size / 2, _y - _size / 2, _size, _size);
+                //保证线条的连贯，所以在矩形一端画圆
+                context.save()
+                context.beginPath()
+                context.arc(_x, _y, _size, 0, 2*Math.PI);
+                context.clip()
+                clearCanvas();
+                context.restore();
+            }
         }
         // 鍵盤監控
         window.onkeydown = function doKeyDown(e) {
