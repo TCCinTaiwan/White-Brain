@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Saving the image. J-Painter. Developer's Guide</title>
+    <link rel="stylesheet" href="guide.css" media="screen">
+</head>
+
+<body>
+
+<h3>Saving the image</h3>
+
+<p>To save the image on the server you have to get the image data from the painter
+and send it to ther server.</p>
+
+<p>You can get the image data using the painter method <a href="methods.html#getImageData"><code>getImageData(options)</code></a>.</p>
+<pre>
+    var imageData = painter.getImageData();
+</pre>
+
+<p>This method returns the image as JavaScript string having data URI format:</p>
+<pre>
+    data:image/png;base64,&lt;<i>...data...</i>&gt;
+</pre>
+
+<p><b>Example:</b></p>
+<pre>
+    data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAA
+    AHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==
+</pre>
+
+<p>Then you can send the obtained string to the server using a hidden field in an HTML form or using AJAX.<br />
+Your server-side script will have to decode the data and convert it to binary image file (if necessary) or save it on the server as is.</p>
+
+</body>
+</html>

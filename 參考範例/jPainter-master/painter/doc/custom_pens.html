@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Custom Pens</title>
+    <link rel="stylesheet" href="guide.css" media="screen">
+</head>
+
+<body>
+
+<h3>Custom Pens</h3>
+
+<p>In addition to standard pens you can define you own.
+To define a pen use method <code>addCustomPen(name,pen_def)</code>,<br />
+where <code>name</code> - name of your pen, <code>pen_def</code> - pen definition object.<br />
+Two types of pen definitions <a href="#pen_shape">Shape Pen</a> and <a href="#pen_compound">Compound Pen</a> are described below.</p>
+
+<p>Before using your a pen on the <a href="placing.html#pen_panel">Pen Panel</a> create an icon
+and assing it using the method <a href="methods.html#setIcons"><code>setIcons()</code></a>,<br>
+for example:</p>
+<pre>    painter.setIcon({ 'rohmb' : 'rhomb.gif' });
+</pre>
+
+<h3 id="pen_shape">Shape Pen</h3>
+
+<p>Shape pen puts specified shapes along drawn curve.</p>
+Example:
+<pre>
+  painter.addCustomPen('rhomb', {
+     type   : 'shape',
+     path   : 'M -4 0 L 0 -4 L 4 0 L 0 4 Z',
+     advance: 20,
+     width  : 8
+  });
+</pre>
+
+<dl>
+  <dt><code>name</code> - defines the pen name wich can be used for the pen panel or custom tools.</dt>
+
+  <dt><code>pen_def</code> is an object defining the pen parameters:</dt>
+    <dd><code>type</code>    - type of pen definition (must be 'shape')</dd>
+    <dd><code>path</code>    - path describing the shape (see below)</dd>
+    <dd><code>advance</code> - distance between the shapes along the curve</dd>
+    <dd><code>width</code>   - pen width (maximum width of the shape in all possible direction - 360 around)</dd>
+</dl>
+
+<h4>Path definition</h4>
+
+<dl>
+  <dt>Path definition describes the shape using a series commands.<br>
+      The following commands can be used:</dt>
+    <dd><code>M x y               </code> - move pointer to</dd>
+    <dd><code>L x y               </code> - line to</dd>
+    <dd><code>Q x1 y1 x2 y2       </code> - quadratic bezier segment</dd>
+    <dd><code>C x1 y1 x2 y2 x3 y3 </code> - cubic bezier segment</dd>
+    <dd><code>Z                   </code> - close the path</dd>
+</dl>
+
+Coordinates reference frame<br>
+<img src="pen_coords.png" align="top"></p>
+The commands and coordinates in the path must be separated by spaces.<br>
+
+
+<h3 id="pen_compound">Compound Pen</h3>
+
+<p>Compound Pen is summ or difference of two pens, usually a standard pen and a shape pen.</p>
+Example:
+<pre>
+  painter.addCustomPen( 'solid_with_rhomb_holes', {
+     type      : 'compound',
+     pen1   : { width:8 }, //<i>solid pen</i>
+     pen2   : {
+          type   : 'shape',
+          path   : 'M -4 0 L 0 -4 L 4 0 L 0 4 Z',
+          advance: 20
+     },
+     operation : 'sub', //<i>subtract pen2 from pen1</i>
+     width     : 8
+  });
+</pre>
+
+<dl>
+  <dt>Compound pen fields:</dt>
+    <dd><code>type</code>      - must be 'compound'</dd>
+    <dd><code>pen1</code>   - the 1st pen in the compound</dd>
+    <dd><code>pen2</code>   - the 2nd pen in the compound</dd>
+    <dd><code>operation</code> - 'add' or 'sub'</dd>
+    <dd><code>width</code>     - effective pen width (in any direction - maximum)</dd>
+</dl>
+
+<hr />
+</body>
+</html>
+
+<!--
+'snowflake'
+'steps'
+-->

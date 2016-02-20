@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>白板Write's Brain</title>
+		<link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
+		<style type="text/css">
+			html, body {
+				margin: 0;
+				padding: 0;
+				height: 100%;
+				overflow-x: hidden;
+				overflow-y: hidden;
+			}
+		</style>
+	</head>
+	<body>
+		<canvas style="cursor:pointer;background:black;" >你的瀏覽器不支援Canvas。</canvas>
+		<script type="text/javascript">
+	        var paintpoints = new Array();
+	        var paintpoints_content = new Array();
+	        var canvas;
+	        var context;
+	        var paint = false;
+	        window.onload = function () {
+				canvas = document.getElementsByTagName('canvas')[0];
+	            context = canvas.getContext('2d');
+	            window.addEventListener('keydown', doKeyDown, true);
+	            resize();
+	        };
+	        window.onresize = function() {
+                resize();
+            };
+            function resize()
+            {
+				if (canvas.width  < window.innerWidth) {
+	                canvas.width  = window.innerWidth;
+	            }
+	            if (canvas.height < window.innerHeight) {
+	                canvas.height = window.innerHeight;
+	            }
+            }
+	        function clearCanvas() {
+	            context.clearRect(0, 0, canvas.width, canvas.height);
+	        }
+	        function doKeyDown(e) {
+				var keyID = e.keyCode ? e.keyCode :e.which;
+				console.log(keyID);
+				e.preventDefault();
+			}
+		</script>
+	</body>
+</html>

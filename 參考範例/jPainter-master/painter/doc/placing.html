@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Placing the editor on a page</title>
+    <link rel="stylesheet" href="guide.css" media="screen">
+</head>
+
+<body>
+
+<h3>Placing the editor on a page</h3>
+
+<p>Before placing the editor on the page include its code and create new instance
+of <a href="methods.html#constructor"><code>Painter</code></a>&nbsp;object:<p>
+<pre>
+&lt;script src="http://izhuk.com/painter/8"&gt;&lt;/script&gt;
+&lt;script&gt;
+    var painter = new Painter();
+&lt;/script&gt;
+</pre>
+<script src="http://izhuk.com/painter/8"></script>
+
+<script>
+    var painter = new Painter();
+</script>
+
+<p>Now you can place the editor components on the page. There are 5 types of the components:</p>
+
+<table>
+    <tr><td><a href="#draw_area">Draw Area</a></td><td>Represents the drawing area</td></tr>
+    <tr><td><a href="#tool_panel">Tool Panel</a></td><td>Contains buttons for choosing a drawing tool</td></tr>
+    <tr><td><a href="#color_panel">Color Panel</a></td><td>Contains buttons for choosing a drawing color</td></tr>
+    <tr><td><a href="#pen_panel">Pen Panel</a></td><td>Contains buttons for choosing a drawing pen</td></tr>
+    <tr><td><a href="#pattern_panel">Pattern Panel</a></td><td>Contains buttons for pattern for fillsed shapes</td></tr>
+    <tr><td><a href="#action_panel">Action Panel</a></td><td>Contains buttons for action or options</td></tr>
+</table>
+
+<p>The components can be placed and configured on the page individually. The rest of this section describes them.<p>
+
+<p>&nbsp;</p>
+<h3 style="background:#c0c0d0" id="draw_area">Draw Area</h3>
+
+<p>Draw Area represents the drawing area. It is the only required component.<br />
+To create the Draw Area define an HTML5 canvas element, for example:</p>
+
+<pre>&lt;canvas id="<b>drawarea</b>" width="640" height="160"&gt;&lt;/canvas&gt;</pre>
+
+<p>and call painter's method <a href="methods.html#setDrawArea"><code>setDrawArea()</code></a>
+passing the canvas element as parameter:<p>
+<pre>&lt;script&gt;
+    painter.setDrawArea(document.getElementById('<b>drawarea</b>'));
+&lt;/script&gt;</pre>
+
+<p>The result must look like this (you can draw here):</p>
+
+<canvas id="drawarea" width="640" height="160"><a href="../doc/cant_see_canvas.html"
+			>Your browser doesn't support &lt;canvas&gt; tag</a></canvas>
+
+<script>
+    painter.setDrawArea(document.getElementById('drawarea'));
+    painter.setImageSize(800,160);
+</script>
+
+<p>By default the image size equals to the Draw Area size, but
+you can change it using the method <a href="methods.html#setImageSize"><code>setImageSize(width,height)</code></a>.</p>
+
+<p>&nbsp;</p>
+<h3 id="tool_panel" style="background:#c0c0c0" >Tool Panel</h3>
+
+<p>The Tool Panel displayes buttons that allow selecting a drawing tool.
+To create a Tool Panel define an HTML5 canvas element:</p>
+
+<pre>&lt;canvas id="toolpanel" width="395" height="65"&gt;&lt;/canvas&gt;</pre>
+
+<p>and call painter's method <a href="methods.html#addControlPanel"><code>addControlPanel()</code></a>
+passing the canvas element and the panel options as parameters:</p>
+
+<pre>&lt;script&gt;
+    painter.addControlPanel( document.getElementById('toolpanel'), {
+    'tools': 'line,arrow_path,curve,rect,round_rect,oval,polyline,bezier,color_picker,flood_fill,move_rect,pan,'+
+	     'arrow,arrow_dim,area,filled_rect,filled_round_rect,filled_oval,polygon,point,eraser,text,copy_rect,select_rect',
+    'rows' : 2,
+    'cols' : 0
+    });
+&lt;/script&gt;</pre>
+<p>The result must look like this:</p>
+<canvas id="toolpanel" width="395" height="65"></canvas>
+<script>
+  painter.addControlPanel( document.getElementById('toolpanel'), {
+    'tools': 'line,arrow_path,curve,rect,round_rect,oval,polyline,bezier,color_picker,flood_fill,move_rect,pan,'+
+	     'arrow,arrow_dim,area,filled_rect,filled_round_rect,filled_oval,polygon,point,eraser,text,copy_rect,select_rect',
+    'rows' : 2,
+    'cols' : 0,
+    'background':'#C0D0D0'
+  });
+</script>
+
+<p>The main and necessary option is '<code>tools</code>' which defines the list of tools.<br />
+The example above shows all the supported tools. So, you can use it as the Tool Reference.<br />
+In addition to standard tools you can <a href="methods.html#addCustomTool">add custom tools</a>
+which are combination of a standard tool, color, and/or pen.
+
+<p>&nbsp;</p>
+<h3 id="color_panel" style="background:#c0c0c0" >Color Panel</h3>
+
+<p>The Color Panel displayes buttons that allow the user to select the drawing color.
+To create a Color Panel define an HTML5 canvas element:</p>
+
+<pre>&lt;canvas id="colorpanel" width="449" height="49"&gt;&lt;/canvas&gt;</pre>
+
+<p>and call painter's method <a href="methods.html#addControlPanel"><code>addControlPanel()</code></a>
+passing to it the canvas element and the panel options:</p>
+
+<pre>&lt;script&gt;
+  painter.addControlPanel( document.getElementById('colorpanel'), {
+    'colors': '#ff0000,#ffff00,#c0c000,#00ff00,#00ffff,#0000ff,#c000ff,#ff00ff,#ff00c0,'+
+              '#ffc0c0,#ffffc0,#f0f080,#c0ffc0,#c0ffff,#c0c0ff,#f080ff,#ffc0ff,#ffe0e0,'+
+              '#cc0000,#888800,#606000,#008800,#008888,#000088,#8000cc,#880088,#cc0080,'+
+              '#ffffff,#e0e0e0,#d0d0d0,#c0c0c0,#b0b0b0,#a0a0a0,#808080,#404040,#000000',
+    'rows' : 2,
+    'cols' : 0
+  });
+&lt;/script&gt;</pre>
+<p>The result must look like this:</p>
+<canvas id="colorpanel" width="449" height="49"></canvas>
+<script>
+    painter.addControlPanel( document.getElementById('colorpanel'), {
+	'colors': '#ff0000,#ffff00,#c0c000,#00ff00,#00ffff,#0000ff,#c000ff,#ff00ff,#ff00c0,'+
+		'#ffc0c0,#ffffc0,#f0f080,#c0ffc0,#c0ffff,#c0c0ff,#f080ff,#ffc0ff,#ffe0e0,'+
+		'#cc0000,#888800,#606000,#008800,#008888,#000088,#8000cc,#880088,#cc0080,'+
+		'#ffffff,#e0e0e0,#d0d0d0,#c0c0c0,#b0b0b0,#a0a0a0,#808080,#404040,#000000',
+	'rows' : 2,
+	'cols' : 0,
+	'background' :'#c0d0d0'
+    });
+</script>
+
+<p>The main and necessary option is '<code>colors</code>' which defines the list of colors.<br />
+See more details on the method <a href="methods.html#addControlPanel"><code>addControlPanel</code></a>.</p>
+
+<p><b>Note:</b> If you wish to specify one or more colors as <code>rgba(red,green,blue,alpha)</code><br>
+use array of strings instead of comma separated string for the <code>colors</code> property, for example:<br>
+<nobr><code>colors : ['rgba(255,0,0,0.5)','rgba(0,255,0,0.5)','rgba(0,0,255,0.5)']</code></nobr>;
+</p>
+
+<p>&nbsp;</p>
+<h3 id="pen_panel" style="background:#c0c0c0" >Pen Panel</h3>
+<p>The Pen Panel displayes buttons that allow the user to select the drawing pen.
+To create a Pen Panel define an HTML5 canvas element:</p>
+
+<pre>&lt;canvas id="penpanel" width="199" height="24"&gt;&lt;/canvas&gt;</pre>
+
+<p>and call painter's method <a href="methods.html#addControlPanel"><code>addControlPanel()</code></a>
+passing to it the canvas element and the panel options:</p>
+
+<pre>&lt;script&gt;
+    painter.addControlPanel( document.getElementById('penpanel'), {
+	'pens' : 'solid1,solid2,solid4,dashed1,dashed2,dashed4,zigzag2,zigzag4',
+	'rows' : 1,
+	'cols' : 0
+    });
+&lt;/script&gt;</pre>
+
+<p>The result must look like this:</p>
+<canvas id="penpanel" width="199" height="24"></canvas>
+<script>
+    painter.addControlPanel( document.getElementById('penpanel'), {
+	'pens' : 'solid1,solid2,solid4,dashed1,dashed2,dashed4,zigzag2,zigzag4',
+	'rows' : 1,
+	'cols' : 0,
+	'background' :'#c0d0d0'
+    });
+</script>
+
+<p>The main and necessary option is '<code>pens</code>' which defines the list of pens.<br />
+In addition to the standard pens listed above you can <a href="custom_pens.html">define you custom pens</a>.<br />
+See more details on the method <a href="methods.html#addControlPanel"><code>addControlPanel</code></a>.</p>
+
+<p>&nbsp;</p>
+<h3 id="pattern_panel" style="background:#c0c0c0" >Pattern Panel</h3>
+<p>The Pattern Panel displayes buttons to select pattern for filled shapes.
+To create a Pattern Panel define an HTML5 canvas element:</p>
+
+<pre>&lt;canvas id="patternpanel" width="247" height="24"&gt;&lt;/canvas&gt;</pre>
+
+<p>and call painter's method <a href="methods.html#addControlPanel"><code>addControlPanel()</code></a>
+passing to it the canvas element and the panel options:</p>
+
+<pre>&lt;script&gt;
+    painter.addControlPanel( document.getElementById('patternpanel'), {
+	'patterns' : 'solid, hatching, crosshatch, dots, grid, saw, bricks, wave',
+	'rows' : 1,
+	'cols' : 0
+    });
+&lt;/script&gt;</pre>
+
+<p>The result must look like this:</p>
+<canvas id="patternpanel" width="247" height="24"></canvas>
+<script>
+    painter.addControlPanel( document.getElementById('patternpanel'), {
+	'patterns' : 'solid, hatching, crosshatch, dots, grid, saw, bricks, wave',
+	'rows' : 1,
+	'cols' : 0,
+	'background' :'#c0d0d0'
+    });
+</script>
+
+<p>The main and necessary option is '<code>patterns</code>' defining the list of patterns.</p>
+
+<p>&nbsp;</p>
+<h3 id="action_panel" style="background:#c0c0c0" >Action Panel</h3>
+<p>The Action Panel displayes buttons that allow the user to select the drawing pen.
+To create a Action Panel define an HTML5 canvas element:</p>
+
+<pre>&lt;canvas id="actionpanel" width="149" height="24"&gt;&lt;/canvas&gt;</pre>
+
+<p>and call painter's method <a href="methods.html#addControlPanel"><code>addControlPanel()</code></a>
+passing to it the canvas element and the panel options:</p>
+
+<pre>&lt;script&gt;
+    painter.addControlPanel( document.getElementById('actionpanel'), {
+	'actions':'clear,undo,redo,font',
+	'rows' : 1,
+	'cols' : 0
+    });
+&lt;/script&gt;</pre>
+
+<p>The result must look like this:</p>
+<canvas id="actionpanel" width="131" height="32"></canvas>
+<script>
+    painter.addControlPanel( document.getElementById('actionpanel'), {
+	'actions':'clear,undo,redo,font',
+	'rows' : 1,
+	'cols' : 0,
+	'background' :'#c0d0d0'
+    });
+</script>
+
+<p>The main and necessary option is '<code>actions</code>' which defines the list of actions.<br />
+See more details on the method <a href="methods.html#addControlPanel"><code>addControlPanel</code></a>.</p>
+<hr />
+
+</body>
+</html>

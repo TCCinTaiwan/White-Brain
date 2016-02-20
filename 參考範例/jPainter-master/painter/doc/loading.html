@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Loading the image. J-Painter. Developer's Guide</title>
+    <link rel="stylesheet" href="guide.css" media="screen">
+</head>
+
+<body>
+
+<h3>Loading the image</h3>
+
+<p>To load the image for editing use the method: <code>loadImage(url)</code>, for example:</p>
+<pre>
+    painter.loadImage('some_image.gif');
+</pre>
+
+<p>The image is loaded to the DrawArea.
+If the image size exceeds the DrawArea it is cropped at the right and bottom sides.
+If the image size is less than the DrawArea size it is positioned at the upper-left corner.
+</p>
+
+<h3>Loading the background image</h3>
+
+<p>The background image is a separate image displayed underneath the main (editable) image.
+To load the background image use the method: <code>loadBackgroundImage(url)</code>, for example:</p>
+<pre>
+    painter.loadBackgroundImage('picture.jpg');
+</pre>
+
+</body>
+</html>

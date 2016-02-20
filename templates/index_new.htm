@@ -1,0 +1,294 @@
+<html data-livestyle-extension="available"><head>
+        <title>白板 Write's Brain</title>
+        <link rel="icon" type="image/png" href="/favicon.png">
+        <style type="text/css">
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow-x: hidden;
+            overflow-y: hidden;
+            background-repeat: no-repeat;
+            /*background: black;*/
+        }
+        /* 主畫布 */
+        #canvas {
+            cursor: pointer; /* 保持鼠標 */
+            background: transparent; /* 背景透明 */
+        }
+        #canvas:active {/* 交給javascript */
+            cursor: crosshair; /* 保持鼠標 */
+        }
+        /* 預覽線 */
+        #preview {
+            display: none;
+            width: 0px; /* 在這裡width代表線的長度 */
+            cursor: pointer; /* 保持鼠標 */
+            border-top-width: 1px;
+            border-top-style: solid;
+            border-top-color: red;
+            /*border-bottom-width: 1px;
+            border-bottom-style: dashed;
+            border-bottom-color: blue;*/
+            position: fixed;
+            transform-origin: left;
+            z-index: 100; /* 保持在上層，理論上這個數字要比選單小，比畫布大 */
+        }
+        #prview.line {
+
+        }
+        #contextMenu {
+            size: 50px 100px;
+            background: white;
+            z-index: 200;
+            position: fixed;
+            display: none;
+        }
+        #contextMenu > div {
+            background: white;
+            padding: 2px 10px;
+            border-width: 1px;
+            border-color: grey;
+            border-style: solid;
+        }
+        #contextMenu > div:hover {
+            background-color: grey;
+        }
+
+        #contextMenu > .changeMode {
+            /**/
+        }
+        </style>
+        <script src="/jquery-2.2.0.js"></script>
+    </head>
+
+    <body background="/black.jpg" tabindex="0">
+        <canvas id="canvas" width="1366" height="422">
+            你的瀏覽器不支援 Canvas。<!-- onmousedown="mousedownHandler(event)" onmousemove="mousemoveHandler(event)" onmouseup="mouseupHandler(event)" -->
+        </canvas>
+        <div id="preview"></div>
+        <div id="contextMenu">
+            <div id="changemode" class="changeMode">模式: 正常</div>
+            <div id="changeshape" class="changeShape">形狀: 畫筆</div>
+            <div onmousedown="changeWidth();">寬度</div>
+            <div onmousedown="changeColor();">顏色</div>
+            <div onmousedown="clearCanvas();">清空</div>
+
+        </div>
+        <script type="text/javascript">
+        // console.group()
+        var context;
+
+        var mode = 0;//0:正常 1:移動地圖
+        var status = 0;//
+        var shape = 0;//0:畫筆 1:直線 2:圓形 3:多邊形 4:矩形 5:橡皮擦
+        var paint = false;
+        var line = false;
+        var lineWidth = 5;
+        var lineColor = "red";
+        var startpoint = {x : 0, y : 0};
+
+        var canvashistory = new Array();
+        var canvasstep = -1;
+
+        window.onload = function() {
+            context = canvas.getContext('2d');
+            // window.addEventListener('keydown', doKeyDown, true);
+            resize();
+        };
+        window.onresize = function() {
+            resize();
+        };
+        function resize() { //保持畫布為視窗大小
+            if (canvas.width < window.innerWidth) {
+                canvas.width = window.innerWidth;
+            }
+            if (canvas.height < window.innerHeight) {
+                canvas.height = window.innerHeight;
+            }
+        }
+        function changeWidth() {
+            _lineWidth = Number(prompt('請輸入畫筆寬度：'));
+            if (_lineWidth != '') {
+                lineWidth = (_lineWidth < 1) ? 1 : _lineWidth;
+            }
+        }
+        function changeColor() {
+            _lineColor = prompt('請輸入畫筆顏色：');
+            if (_lineColor != '') {
+                lineColor = _lineColor;
+            }
+        }
+        changeshape.onmousedown = function changeShape() {
+            shape = (shape + 1) % 5; //模式(0~4)
+            shapeList = {
+                0 : "畫筆",
+                1 : "直線",
+                2 : "園",
+                3 : "多邊形",
+                4 : "矩形"
+            }
+            changeshape.textContent = "形狀:" + shapeList[mode];
+        }
+        changemode.onmousedown = function changeMode() {
+            mode = (mode + 1) % 5; //模式(0~4)
+            modeList = {
+                0 : "正常",
+                1 : "移動"
+            }
+            changemode.textContent = "模式:" + modeList[mode];
+        }
+        //滑鼠事件
+        document.onmousedown = function mousedownHandler(e) {
+            // console.dir(e);
+            if (contextMenu.style.display == "block") {
+                contextMenu.style.display = "none";
+
+            }
+            if ((e.button == 0) && (e.toElement == canvas)) {
+                startpoint.x = e.clientX;
+                startpoint.y = e.clientY;
+                // cross(startpoint.x, startpoint.y, lineWidth);
+                context.beginPath();
+                context.strokeStyle = lineColor; // 'blue'
+                context.lineWidth = lineWidth;
+                context.lineJoin = 'round'; //bevel:斜角 miter:尖角
+                context.lineCap = 'round'; //butt:平直 square:正方形
+                context.moveTo(startpoint.x, startpoint.y);
+                paint = true;
+                if (e.shiftKey) {
+                    line = true;
+                    preview.class
+                    preview.style.borderTopWidth = lineWidth + "px";//(lineWidth / 2)
+                    preview.style.borderRadius = lineWidth+ "px";
+                    preview.style.width = "0px";
+                    preview.style.left = startpoint.x + "px";
+                    preview.style.borderColor = lineColor;
+                    preview.style.top = startpoint.y + "px";
+                    preview.style.display = "block";
+                    if (mode == 1) {
+                        preview.style.height = "100px";
+                    }
+                }
+            }
+        }
+        document.onmousemove = function mousemoveHandler(e) {
+            if (paint) {
+                if (line) {
+                    var ab = Math.sqrt(Math.pow(e.clientX - startpoint.x, 2) + Math.pow(e.clientY - startpoint.y, 2))+ lineWidth;
+                    rad = Math.atan((startpoint.y - e.clientY) / (startpoint.x - e.clientX));
+                    preview.style.width = ab + "px";
+
+                    preview.style.margin = ((startpoint.x < e.clientX ? -lineWidth : lineWidth) * Math.sin(rad) - lineWidth) / 2 + "px " + (startpoint.x < e.clientX ? -lineWidth : lineWidth) * Math.cos(rad) / 2 + "px";
+                    // console.log(rad * 180 / Math.PI); //顯示角度
+                    preview.style.transform = "rotate(" + (rad + ((startpoint.x >= e.clientX) ? Math.PI : 0)) + "rad)";//rad
+                    return;
+                }
+                var x = e.clientX;
+                var y = e.clientY;
+                context.lineTo(x, y);
+                context.stroke();//繪製路徑
+            }
+        }
+        document.onmouseup = function mouseupHandler(e) {
+            if (paint) {
+                context.lineTo(e.clientX, e.clientY);
+                context.stroke();//繪製路徑
+                context.closePath();
+                paint = false;
+                if (line) {
+                    line = false;
+                    preview.style.display = "none";
+                }
+                canvaspush();
+            }
+        }
+        document.onmousewheel = function mousewhellHandler(e) {
+            console.log("滾輪" + e.wheelDelta);
+            // console.dir(e);
+        }
+        // 右鍵選單
+        document.oncontextmenu = function contextmenuHandler(e) {
+            contextMenu.style.display = "block";
+            contextMenu.style.left = (e.clientX - contextMenu.offsetWidth / 2) + "px";
+            contextMenu.style.top = (e.clientY - contextMenu.offsetHeight / 2) + "px";
+            e.preventDefault();
+        }
+        // 畫十字(debug)
+        function cross(x, y, size) {
+            context.beginPath();
+            context.lineWidth = 1;
+            context.moveTo(x - size / 2, y);
+            context.lineTo(x + size / 2, y);
+            context.moveTo(x, y - size / 2);
+            context.lineTo(x, y + size / 2);
+            context.stroke();//繪製路徑
+            context.closePath();
+        }
+        // 加入步驟
+        function canvaspush() {
+            canvasstep ++;
+            if (canvasstep < canvashistory.length){
+                canvashistory.length = canvasstep;
+            }
+            canvashistory.push(context.getImageData(0, 0,canvas.width, canvas.height));
+            console.log("步驟" + (canvasstep + 1));
+            // console.dir(canvashistory);
+        }
+        // 上一步
+        function undo() {
+            clearCanvas();
+            // 基本圖
+            if (canvasstep >= 0) {
+                console.log("回到步驟" + canvasstep);
+                canvasstep --;
+            } else {
+                alert("已回復到最前面");
+            }
+            if (canvasstep >= 0) {
+                context.putImageData(canvashistory[canvasstep], 0, 0);
+            }
+
+        }
+        // 下一步
+        function redo() {
+            // 基本圖
+            if (canvasstep < canvashistory.length - 1) {
+                clearCanvas();
+                canvasstep ++;
+                console.log("重做步驟" + (canvasstep + 1));
+                context.putImageData(canvashistory[canvasstep], 0, 0);
+            } else {
+                alert("已重做所有動作");
+            }
+
+        }
+        // 清空畫布
+        function clearCanvas() {
+            context.clearRect(0, 0, canvas.width, canvas.height);
+        }
+        // 鍵盤監控
+        window.onkeydown = function doKeyDown(e) {
+            var keyID = e.keyCode ? e.keyCode : e.which;
+            console.log(keyID);
+            if (keyID == 116) { // F5
+                clearCanvas();
+                e.preventDefault();
+
+            } else if (keyID == 123) { // F12
+                prompt('請輸入主控台密碼(誤)：')
+            } else if (keyID == 90 && e.ctrlKey) { // Ctrl + Z
+                undo();
+                e.preventDefault();
+            } else if (keyID == 89 && e.ctrlKey) { // Ctrl + Y
+                redo();
+                e.preventDefault();
+            } else {
+                e.preventDefault();
+            }
+        }
+        </script>
+    
+
+<img title="點我閱讀" src="chrome-extension://hdeikpphnbclpacdjdjjkpmbcacopnog/images/icon48.png" style="height: 30px; width: 30px; display: block; position: fixed; z-index: 999999; visibility: hidden; background-color: rgb(255, 255, 0);"><div id="alertify-cover" class="alertify-cover alertify-cover-hidden"></div><section id="alertify" class="alertify alertify-hidden"></section><section id="alertify-logs" class="alertify-logs alertify-logs-hidden"></section></body></html>

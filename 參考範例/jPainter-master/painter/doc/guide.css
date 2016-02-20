@@ -1,0 +1,17 @@
+body,table {
+    font-size: 16px;
+}
+
+body {
+ background: #C0D0D0;
+ color: black
+}
+
+table {
+ background: #C0C0C0;
+ color: black
+}
+
+canvas {
+    outline: none;
+}

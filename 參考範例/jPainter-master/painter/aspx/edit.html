@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Edit image</title>
+</head>
+
+<script src="http://izhuk.com/painter/8"></script>
+<script src="../cliparts/cliparts.js"></script>
+
+<style>
+    canvas { outline: none; }
+</style>
+
+<body bgcolor="#e0e0e0">
+
+<table><tr>
+
+<td valign="top">
+
+<!-- Painter -->
+<table border="0" cellspacing="2" cellpadding="0">
+<tr>
+    <td colspan="3"><table width="100%"><tr>
+	<td align="left" valign="bottom"><canvas id="actionpanel" width="131" height="32"></canvas></td>
+	<td align="center" valign="bottom"><input type="button" value="Save" onclick="save()"></td>
+    </tr></table></td>
+</tr>
+<tr>
+    <td valign="top"><canvas id="toolpanel" width="65" height="362"></canvas><br />
+    <canvas id="actionpanel2" width="65" height="32"></canvas></td>
+    <td valign="top"><canvas id="drawcanvas" width="600" height="400" style="border: 1px solid black;"><a
+    href="../doc/cant_see_canvas.html">Your browser doesn't support &lt;canvas&gt; tag</a></canvas></td>
+    <td valign="top"><table>
+	<!-- Cliparts (see ../cliparts/cliparts.js for details) -->
+	<tr><td><img src="../cliparts/apple.gif"    draggable="true"></td></tr>
+	<tr><td><img src="../cliparts/cherry.gif"   draggable="true"></td></tr>
+	<tr><td><img src="../cliparts/ladybird.gif" draggable="true"></td></tr>
+	<tr><td><img src="../cliparts/flower.gif"   draggable="true"></td></tr>
+	<tr><td><img src="../cliparts/raisin.gif"   draggable="true"></td></tr>
+	<tr><td><img src="../cliparts/carrot.gif"   draggable="true"></td></tr>
+    </table></td>
+</tr>
+<tr>
+    <td valign="top" colspan="3">
+	<canvas id="colorpanel" width="449" height="49"></canvas>
+	&nbsp;
+	<canvas id="penpanel"   width="73"  height="49"></canvas>
+	&nbsp;
+	<canvas id="patternpanel" width="123" height="49"></canvas>
+    </td>
+</tr>
+</table>
+
+<!-- Save Form -->
+<form id="save_form" action="save.aspx" method="POST"><input id="base64data" name="base64data" type="hidden" value=""></form>
+
+</td>
+
+<td valign="top">
+  Since <code>save.aspx</code> saves the image in the example's directory on your server
+  ensure write permissions for this directory before pressing the button "Save".
+</td>
+</tr></table>
+
+<script language="javascript">
+
+var painter;
+
+function initPainter() {
+    painter = new Painter();
+
+    var drawArea = document.getElementById('drawcanvas');
+    painter.setDrawArea(drawArea);
+
+    painter.addControlPanel(document.getElementById('actionpanel'),{
+	'actions':'clear,undo,redo,font',
+	'rows' : 1,
+	'cols' : 0
+    });
+
+    painter.addControlPanel(document.getElementById('actionpanel2'),{
+	'actions':'ctrl',
+	'rows' : 1,
+	'cols' : 1
+    });
+
+    painter.addControlPanel(document.getElementById('penpanel'),{
+	'pens' : 'solid1,dashed1,zigzag2,solid4,dashed2,zigzag4',
+	'rows' : 2,
+	'cols' : 3
+    });
+
+    painter.addControlPanel(document.getElementById('toolpanel'),{
+	'tools':'line,arrow,arrow_path,arrow_dim,curve,area,rect,filled_rect,round_rect,filled_round_rect,'+
+		'oval,filled_oval,polyline,polygon,select_rect,bezier,eraser,color_picker,text,flood_fill,'+
+		'move_rect,copy_rect',
+	'rows' : 0,
+	'cols' : 2
+    });
+
+    painter.addControlPanel(document.getElementById('colorpanel'),{
+	'colors': '#ff0000,#ffff00,#c0c000,#00ff00,#00ffff,#0000ff,#c000ff,#ff00ff,#ff00c0,'+
+		'#ffc0c0,#ffffc0,#f0f080,#c0ffc0,#c0ffff,#c0c0ff,#f080ff,#ffc0ff,#ffe0e0,'+
+		'#cc0000,#888800,#606000,#008800,#008888,#000088,#8000cc,#880088,#cc0080,'+
+		'#ffffff,#e0e0e0,#d0d0d0,#c0c0c0,#b0b0b0,#a0a0a0,#808080,#404040,#000000',
+	'rows' : 2,
+	'cols' : 0
+    });
+
+    painter.addControlPanel(document.getElementById('patternpanel'),{
+	'patterns': 'solid, hatching, crosshatch, dots, grid, saw, bricks, wave',
+	'rows' : 2,
+	'cols' : 0
+    });
+
+    initCliparts(painter, drawArea, 600-1-40,0);
+
+    painter.loadImage('image.png');
+}
+
+initPainter();
+
+function save() {
+    var dataURI = painter.getImageData();
+    var base64data = dataURI.substring(dataURI.indexOf('base64,')+'base64,'.length);
+    document.getElementById('base64data').value = base64data;
+    document.getElementById('save_form').submit();
+}
+
+</script>
+
+</body>
+</html>

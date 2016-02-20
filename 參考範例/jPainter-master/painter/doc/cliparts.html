@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>J-Painter. Cliparts</title>
+    <link rel="stylesheet" href="guide.css" media="screen">
+</head>
+
+<body>
+
+<h3>Using cliparts</h3>
+
+<p>The editor allows inserting cliparts (small images) on the <a href="placing.html#draw_area"><code>DrawArea</code></a>.
+For that it provides the method: <a href="methods.html#putClipart"><nobr><code>putClipart(url,x,y,options)</nobr></code></a>,
+where <code>url</code> must be an image's URL and <code>x,y</code> specify location where to put the image
+on the DrawArea. The coordinates <code>x,y</code> must be specified relative to the canvas element representing the DrawArea.</p>
+
+<p>The editor doesn't support panels to display collections of cliparts or methods for dragging them onto the DrawArea.
+You have to create clipart panels yourself using, for example, HTML &lt;img&gt; elements.
+To drag cliparts onto the DrawArea you can use HTML5 Drag and Drop.
+</p>
+
+<p>Unfortunately, HTML5 Drag and Drop is not supported on tablet devices (iOS or Android).
+To support these devices you have to use a different method to deliver cliparts on the DrawArea,
+for example use onclick event on an image and call the method painter.putClipart(url,x,y)
+in the event handler.</p>
+
+<p>The examples included in the download package are accompanied by a certain implementation
+for clipart displaying and insertion but it doesn't claim to be perfect.</p>
+
+<hr />
+</body>
+</html>

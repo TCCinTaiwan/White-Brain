@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>J-Painter. Methods reference.</title>
+    <link rel="stylesheet" href="guide.css" media="screen">
+</head>
+
+<body>
+
+<h2>Painter. Method references</a></h2>
+
+<table width="100%" border="0" cellspacing="8">
+<tr><td colspan="2"><b>Method Summary</b></td></tr>
+
+<tr><td><a href="#constructor">Painter()</a></td><td>Creates <code>Painter</code> object</td></tr>
+<tr><td><a href="#setDrawArea">setDrawArea(canvas,options)</a></td><td>Associates a <code>&lt;canvas&gt;</code> element with the drawing area.</td></tr>
+<tr><td><a href="#setImageSize">setImageSize(width,height)</a></td><td>Sets image size</td></tr>
+<tr><td><a href="#addControlPanel">addControlPanel</a></td><td>Adds a panel containing control buttons</td></tr>
+
+<tr><td><a href="#loadImage">loadImage(url)</a></td><td>Loads an image for editing</td></tr>
+<tr><td><a href="#setImage">setImage(image)</a></td><td>Sets an image for editing</td></tr>
+<tr><td><a href="#loadBackgroundImage">loadBackgroundImage(url)</a></td><td>Loads the background image</td></tr>
+<tr><td><a href="#setBackgroundImage">setBackgroundImage(image)</a></td><td>Sets the background image</td></tr>
+<tr><td><a href="#loadMaskImage">loadMaskImage(url)</a></td><td>Loads the mask image</td></tr>
+<tr><td><a href="#setMaskImage">setMaskImage(image)</a></td><td>Sets the mask image</td></tr>
+
+<tr><td><a href="#getImageData">getImageData(options)</a></td><td>Returns image Data</td></tr>
+<tr><td><a href="#getSelectedData">getSelectedData()</a></td><td>Returns Data of the selected portion of the image</td></tr>
+<tr><td><a href="#isChanged">isChanged()</a></td><td>Returns <code>true</code> if the user has changed anything on the draw area</td></tr>
+<tr><td><a href="#setTool">setTool(tool)</a></td><td>Sets current drawing tool</td></tr>
+<tr><td><a href="#setColor">setColor(color)</a></td><td>Sets current color</td></tr>
+<tr><td><a href="#setPen">setPen(pen)</a></td><td>Sets current pen</td></tr>
+<tr><td><a href="#setPattern">setPattern(pen)</a></td><td>Sets current pattern</td></tr>
+<tr><td><a href="#setFont">setFont(font)</a></td><td>Sets current font for the text tool</td></tr>
+<tr><td><a href="#doAction">doAction(action)</a></td><td>Executes an action</td></tr>
+<tr><td><a href="#putClipart">putClipart(url,x,y,options)</a></td><td>Puts a clipart on the drawing area</td></tr>
+
+<tr><td><a href="#addCustomAction">addCustomAction(name,handler,icons)</a></td><td>Defines custom action button</td></tr>
+<tr><td><a href="#addCustomTool">addCustomTool(name,params)</a></td><td>Defines custom tool button</td></tr>
+<tr><td><a href="#addCustomPen">addCustomPen(name,params)</a></td><td>Defines custom pen</td></tr>
+<tr><td><a href="#addCustomPattern">addCustomPattern(name,image,replacable_color)</a></td><td>Defines custom pattern</td></tr>
+<tr><td><a href="#setIcons">setIcons(icons)</a></td><td>Specfies custom icons for the buttons</td></tr>
+</table>
+
+<p>&nbsp;</p>
+
+<table width="100%" border="0" cellspacing="8">
+<tr><td><b>Method Detail</b></td></tr>
+</table>
+
+<h2 id="constructor"><code>Painter</code></h2>
+<dl>
+    <dd>Constructs new Painter object. More then one instance of Painter object
+    can be constructed on a web page, if necessary.<br/>
+    &nbsp;
+    </dd>
+
+    <dt><b>Example:</b></dt>
+    <dd><code>var painter = new Painter();</code></dd>
+</dl>
+<hr />
+
+<h2 id="setDrawArea"><code>setDrawArea(canvas,options)</code></h2>
+<dl>
+    <dd>Associates an HTML5 canvas element with the drawing area of this painter object.</dd>
+</dl>
+
+<dl>
+    <dt><b>Parameters:</b></dt>
+	<dd><code>canvas</code> - an HTML5 canvas element to serve as the drawing area</dd>
+	<dd><code>options</code> - optional parameters for the drawing area.
+	The following options are supported:<br>
+		&nbsp;&nbsp;&nbsp;&nbsp;<code>select_ignore_bgcolor</code> - if <code>true</code> the tool <code>select_rect</code>
+			doesn't copy the background color.<br>
+		&nbsp;&nbsp;&nbsp;&nbsp;<code>smooth_curve</code> - turns on/off smoothing for curve and area tools.
+			Specify <code>true</code> or <code>false</code>. The default is <code>true</code>;
+	</dd>
+
+    <dt><b>Example:</b></dt>
+    <dd><pre>painter.setDrawArea(document.getElementById("drawarea")), { background : "#ffffff" });
+    </pre>
+    NOTE: If you use jQuery to access DOM elements remember that jQuery selectors, e.g. <code>$("#drawarea")</code>
+    return jQuery wrapping object, not a DOM element, so you should pass <code>$("#drawarea")[0]</code> instead.
+    </dd>
+</dl>
+<hr />
+
+<h2 id="setImageSize"><code>setImageSize(width,height)</code></h2>
+<dl>
+    <dd>Sets the image size. Call this method after setting the draw area if necessary.
+
+    <p>If the image size exceeds the canvas size the use can scroll it using <code>pan</code> tool.</p>
+
+    <p>If you load an existing image or the background one the size is automatically set according to them.
+    If you call this method after loading an image the size is changed to the specified one.
+    If you neither load anything nor call this method the image size is set by the draw area canvas.</p>
+    </dd>
+</dl>
+
+<dl>
+    <dt><b>Parameters:</b></dt>
+	<dd><code>width </code> - image width</dd>
+	<dd><code>height</code> - image height.</dd>
+</dl>
+<hr />
+
+
+<h2 id="addControlPanel"><code>addControlPanel(canvas,options)</code></h2>
+<dl>
+    <dd>Allows defining
+	<a href="placing.html#tool_panel"><code>Tool Panel</code></a> or
+	<a href="placing.html#color_panel"><code>Color Panel</code></a> or
+	<a href="placing.html#pen_panel"><code>Pen Panel</code></a> or
+	<a href="placing.html#action_panel"><code>Action Panel</code></a>.
+
+    Every panel holds the buttons specified by the option
+        <code>tools</code> or
+        <code>colors</code> or
+        <code>pens</code> or
+        <code>actions</code>
+        accordingly.
+    </dd>
+</dl>
+
+<dl>
+    <dt><b>Parameters:</b></dt>
+	<dd><code>canvas</code> - An HTML5 canvas element that serves as the button panel.
+	The canvas size can be set according to your desing preferences.</dd>
+
+	<dd><code>options</code> - The panel options object. The only required option field
+	is the list of buttons. Its name defines the panel type and can be one of the following:
+	"tools" or "colors",or "pens", or "actions."
+	The option value must be comma separated list of button names.
+	  <dl>
+	    <dt>The other option fields supported by every panel type are:</dt>
+	    <dd><code>rows</code> - number of rows to arrange the buttons</dd>
+	    <dd><code>cols</code> - number of columns to arrange the buttons</dd>
+	    <dd><code>hgap</code> - horizontal gap between the buttons</dd>
+	    <dd><code>vgap</code> - vertical gap between the buttons</dd>
+	    <dd><code>background</code> - the background color of the panel</dd>
+	  </dl>
+	</dd>
+
+    <dt><b>Example:</b></dt>
+    <dd><pre>
+painter.addControlPanel(document.getElementById("colorpanel")), {
+    colors : "#000000,#ff0000,#00ff00,#0000ff,#ffffff,#ffff00,#00ffff,#ff00ff",
+    rows   : 2,
+    cols   : 4,
+    background : "#c0c0c0"
+});
+    </pre>
+      <p>You can create more then one panel of same type to arrange buttons in separate groups on the page.</p>
+
+      <p>NOTE: If you use jQuery to access DOM elements remember that jQuery selectors, e.g. <code>$("#colorpanel")</code>
+      return jQuery wrapping object, not a DOM element, so you should pass <code>$("#colorpanel")[0]</code> instead.</p>
+    </dd>
+</dl>
+<hr />
+
+<h2 id="getImageData"><code>getImageData(options)</code></h2>
+<dl>
+    <dd>Returns the image data as Data URI string.</dd>
+</dl>
+<dl>
+    <dt><b>Parameters:</b></dt>
+	<dd><code>options</code> - the following options are supported:
+	<dl>
+	    <dd><code>width</code> - specifies to scale the returned image width to the specified value</dd>
+	    <dd><code>height</code> - specifies to scale the returned image height to the specified value</dd>
+	    <dd><code>background</code> - if <code>true</code> the background layer is painted on the returned image.</dd>
+	    <dd><code>drawing</code> - if <code>true</code> the drawing layer  is painted on the returned image.</dd>
+	    <dd><code>format</code>  - specifies the image format, for example: <code>image/png</code> or <code>image/jpeg</code>.
+	    			       Supported formats depend on the browser.
+	    			       Only <code>image/png</code> is supported in all browsers</dd>
+	</dl>
+	</dd>
+
+    <dt><b>Returns:</b><dt>
+	<dd>JavaScript string containing image data in Data URI format:<br />
+	<code>data:image/png;base64,<...data...></code>
+    </dd>
+</dl>
+<hr />
+
+<h2 id="getSelectedData"><code>getSelectedData()</code></h2>
+<dl>
+    <dd>Returns data of the selected portion of the image or <code>null</code> if there is no selection.</dd>
+</dl>
+<dl>
+    <dt><b>Returns:</b><dt>
+	<dd>Object having the fields <code>x</code> - x left side of the selection,<br />
+	<code>y</code> - y upper side of the selection,<br />
+	and <code>data</code> - string containing image data of the selected portion in Data URI format:<br />
+	<code>data:image/png;base64,<...data...></code>
+    </dd>
+</dl>
+<hr />
+
+
+<h2 id="loadImage"><code>loadImage(url)</code></h2>
+<dl>
+    <dd>Load an image for editing</dd>
+</dl>
+<dl>
+    <dt><b>Parameters:</b></dt>
+	<dd><code>url</code> - URL of the image to be loaded.
+	The URL can be either absolute or relative to the current document.</dd>
+</dl>
+<hr />
+
+<h2 id="setImage"><code>setImage(image)</code></h2>
+<dl>
+    <dd>Sets an image for editing</dd>
+</dl>
+<dl>
+    <dt><b>Parameters:</b></dt>
+	<dd><code>image</code> - Image object to be set.
+	It can be either JavaScript <code>Image</code> or an <code>&lt;img&gt;</code> element.
+	</dd>
+</dl>
+<hr />
+
+<h2 id="loadBackgroundImage"><code>loadBackgroundImage(url)</code></h2>
+<dl>
+    <dd>Loads an image which is used as the background.</dd>
+</dl>
+<dl>
+    <dt><b>Parameters:</b></dt>
+	<dd><code>url</code> - URL of the background image.
+	The URL can be either absolute or relative to the current document.</dd>
+</dl>
+<hr />
+
+<h2 id="setBackgroundImage"><code>setBackgroundImage(image)</code></h2>
+<dl>
+    <dd>Sets an image which is used as the background.</dd>
+</dl>
+<dl>
+    <dt><b>Parameters:</b></dt>
+	<dd><code>image</code> - An Image object to be set.
+	It can be either JavaScript <code>Image</code> or an <code>&lt;img&gt;</code> element.
+	</dd>
+</dl>
+<hr />
+
+
+<h2 id="loadMaskImage"><code>loadMaskImage(url)</code></h2>
+<dl>
+    <dd>Loads an image which is used as mask. Mask can be either GIF or PNG image having transparent areas.<br>
+    The mask is placed on the top of the drawing and the user can't draw outside the transparent areas.</dd>
+</dl>
+<dl>
+    <dt><b>Parameters:</b></dt>
+	<dd><code>url</code> - URL of the mask image.
+	The URL can be either absolute or relative to the current document.</dd>
+</dl>
+<hr />
+
+<h2 id="setMaskImage"><code>setMaskImage(image)</code></h2>
+<dl>
+    <dd>Sets an image which is used as mask. Mask can be either GIF or PNG image having transparent areas.<br>
+    The mask is placed on the top of the drawing  and the user can't draw outside the transparent areas.</dd>
+</dl>
+<dl>
+    <dt><b>Parameters:</b></dt>
+	<dd><code>image</code> - An Image object to be used as the mask.
+	It can be either JavaScript <code>Image</code> or an <code>&lt;img&gt;</code> element.
+	</dd>
+</dl>
+<hr />
+
+<h2 id="isChanged"><code>isChanged()</code></h2>
+<dl>
+    <dd>Returns <code>true</code> if the user has changed anything on the draw area.</dd>
+</dl>
+<hr />
+
+<h2 id="setTool"><code>setTool(tool)</code></h2>
+<dl>
+    <dd>Sets current drawing tool.</dd>
+</dl>
+<dl>
+    <dt><b>Parameters:</b></dt>
+	<dd><code>tool</code> - The tool name. Currently the following tools are supported:
+        <pre>line,arrow_path,curve,rect,round_rect,oval,polyline,color_picker,move_rect,bezier,pan,
+arrow,arrow_dim,area,filled_rect,filled_round_rect,filled_oval,polygon,text,copy_rect,
+eraser,select_rect
+	</pre>
+	</dd>
+</dl>
+<hr />
+
+<h2 id="setColor"><code>setColor(color)</code></h2>
+<dl>
+    <dd>Sets current drawing color.</dd>
+</dl>
+<dl>
+    <dt><b>Parameters:</b></dt>
+	<dd><code>color</code> - color specified as:
+	<code>"#RRGGBB"</code> or <code>"#RGB"</code> or <code>"rgba(red,green,blue,alpha)"</code>.
+	</dd>
+</dl>
+<hr />
+
+<h2 id="setPen"><code>setPen(pen)</code></h2>
+<dl>
+    <dd>Sets current pen for shape outlines.</dd>
+</dl>
+<dl>
+    <dt><b>Parameters:</b></dt>
+	<dd><code>pen</code> - The pen name. Currently the following pens are supported:
+        <pre>solid1,solid2,solid4,dashed1,dashed2,dashed4,zigzag2,zigzag4</pre>
+	</dd>
+</dl>
+<hr />
+
+<h2 id="setPattern"><code>setPattern(pattern)</code></h2>
+<dl>
+    <dd>Sets current pattern for filled shapes.</dd>
+</dl>
+<dl>
+    <dt><b>Parameters:</b></dt>
+	<dd><code>pen</code> - The pattern name. Currently the following pens are supported:
+        <pre>solid, hatching, crosshatch, dots, grid, saw, bricks, wave</pre>
+	</dd>
+</dl>
+<hr />
+
+
+<h2 id="setFont"><code>setFont(font)</code></h2>
+<dl>
+    <dd>Sets font for the text tool.</dd>
+</dl>
+<dl>
+    <dt><b>Parameters:</b></dt>
+	<dd><code>font</code> - Font specification in the following format:
+	<code>name-style-size</code>, where style can be one of the following: <code>plain, bold, italic, bolditalic</code></dd>
+</dl>
+<hr />
+
+<h2 id="doAction"><code>doAction(action)</code></h2>
+<dl>
+    <dd>Executes specified action.</dd>
+</dl>
+<dl>
+    <dt><b>Parameters:</b></dt>
+	<dd><code>action</code> - Action name. The action name can be
+	<code>clear,&nbsp;undo,&nbsp;redo,&nbsp;font</code>,<br />
+	or one of custom actions defined by <a href="#addCustomAction">addCustomAction</a>.
+	</dd>
+</dl>
+<hr />
+
+<h2 id="putClipart"><code>putClipart(url,x,y,options)</code></h2>
+<dl>
+    <dd>Puts specified image on the DrawArea at the specified position.
+    After that the user can adjust the image position and apply it to the DrawArea.
+    </dd>
+</dl>
+<dl>
+    <dt><b>Parameters:</b></dt>
+	<dd><code>url</code> - URL of the image.</dd>
+	<dd><code>x</code> - horizontal coordinate of the clipart (specified relative to the DrawArea element).</dd>
+	<dd><code>y</code> - vertical coordinate of the clipart (specified relative to the DrawArea element).</dd>
+	<dd><code>options</code> - Options object. The following object fields are supported:
+	  <dl>
+	    <dd><code>canresize</code> - if set to <code>false</code> the user can't resize the clipart before applying it; the default is <code>true</code>.</dd>
+	    <dd><code>canrotate</code> - if set to <code>false</code> the user can't rotate the clipart before applying it; the default is <code>true</code>.</dd>
+	    <dd><code>opaque</code> - if set to <code>false</code> the user can't capture the clipart on its transparent areas; the default is <code>true</code>.</dd>
+	  </dl>
+	</dd>
+</dl>
+   NOTE: To resize or rotate the clipart the user has to press Ctrl or Alt key on the keyboard.
+<hr />
+
+<h2 id="addCustomAction"><code>addCustomAction(name,handler,icon)</code></h2>
+<dl>
+    <dd>Defines custom action button.</dd>
+</dl>
+<dl>
+    <dt><b>Parameters:</b></dt>
+	<dd><code>name</code> - name of the button</dd>
+	<dd><code>handler</code> - the function to invoke when the button is pressed</dd>
+	<dd><code>icon</code> - URL of the button icon</dd>
+</dl>
+<dl>
+   <dt><b>Example:</b></dt>
+   <dd><pre>painter.addCustomAction('help',function(action){
+	window.open('help.html','help','width=400, height=300');
+}, 'help.gif' );
+   </pre></dd>
+</dl>
+<hr />
+
+<h2 id="addCustomTool"><code>addCustomTool(name,params)</code></h2>
+<dl>
+    <dd>Defines a custom tool button. Custom tool buttons allow users to select one of the standart tools,
+    color, and pen using single button which is convenient for custom application needs. Once custom tool
+    is defined it can be placed on the <a href="placing.html#ToolPanel">Tool Panel</a>.</dd>
+</dl>
+<dl>
+    <dt><b>Parameters:</b></dt>
+	<dd><code>name</code> - name of the tool </dd>
+	<dd><code>params</code> - object defining the fields: <code>tool</code>,
+	<code>color</code>, <code>pen</code>, <code>pattern</code>, <code>icon</code>. Every field is optional but the <code>tool</code>.
+	For any unspecified field current setting is used.
+        </dd>
+</dl>
+<dl>
+   <dt><b>Example:</b></dt>
+   <dd><pre>painter.addCustomTool('river', {
+	tool:'curve', color:'#0000FF', pen:'solid4' icon:'river.gif'
+});
+   </pre></dd>
+</dl>
+<hr />
+
+<h2 id="addCustomPen"><code>addCustomPen(name,params)</code></h2>
+<dl>
+    <dd>Defines a custom pen button. Custom pen allows using custom shapes when the user draws curves, lines, shape outlines.
+    Once a pen is defined it can be placed on the <a href="placing.html#pen_panel">Pen Panel</a>.</dd>
+</dl>
+<dl>
+    <dt><b>Parameters:</b></dt>
+	<dd><code>name</code> - name of the pen </dd>
+	<dd><code>params</code> - object defining the fields: <code>type</code>,
+	<code>path</code>, <code>advance</code>, <code>width</code>.
+	See more details about <a href="custom_pens.html">custom pens</a>.
+        </dd>
+</dl>
+<hr />
+
+<h2 id="addCustomPattern"><code>addCustomPattern(name,pattern_image,replacable_color)</code></h2>
+<dl>
+    <dd>Defines a custom pattern button. Custom pattern allows using custom patterns for filled shapes.
+    Once a pattern is defined it can be placed on the <a href="placing.html#pattern_panel">Pattern Panel</a>.</dd>
+</dl>
+<dl>
+    <dt><b>Parameters:</b></dt>
+	<dd><code>name</code> - name of the pattern</dd>
+	<dd><code>pattern_icon</code> - image which is used as the pattern</dd>
+	<dd><code>replacable_color</code> - if specified the editor replaces the color on the image with the current color</dd>
+</dl>
+<dl>
+   <dt><b>Example:</b></dt>
+   <dd><pre>painter.addCustomPattern('bush', 'patterns/bush.gif', '#000000' );
+   </pre></dd>
+</dl>
+<hr />
+
+<h2 id="setIcons"><code>setIcons(icons)</code></h2>
+<dl>
+    <dd>Allows to replace the standard button icons.</dd>
+</dl>
+<dl>
+    <dt><b>Parameters:</b></dt>
+	<dd><code>icons</code> - An object whose fields specify new icons. The field names must correspond the tool or pen or action names
+	you want to replace icons for. The corresponding values must be the icons URLs. You can replace either some or all the icons.
+	</dd>
+</dl>
+<dl>
+   <dt><b>Example:</b></dt>
+   <dd><pre>painter.setIcons({
+   clear : 'my_clear_image.gif',
+   undo  : 'my_undo_image.gif',
+   redo  : 'my_redo_image.gif'
+});</pre></dd>
+</dl>
+<hr />
+
+</body>
+</html>
