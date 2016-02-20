@@ -3,6 +3,8 @@ from flask import send_from_directory, url_for
 import os
 app = Flask(__name__, static_url_path = "", static_folder = "static")
 app.debug = True
+def main():
+    app.run(host = "0.0.0.0", port = 80)
 @app.route('/')
 def index():
 	return render_template('index.htm')
@@ -22,4 +24,4 @@ def upload():
 # def showBrain(brainName):
 # 	return render_template('brain.htm')
 if __name__ == '__main__':
-    app.run(host = "0.0.0.0", port = 80)
+    main()

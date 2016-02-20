@@ -20,6 +20,9 @@
             cursor: pointer; /* 保持鼠標 */
             background: transparent; /* 背景透明 */
         }
+        #canvas:active {/* 交給javascript */
+            cursor: crosshair; /* 保持鼠標 */
+        }
         /* 預覽線 */
         #preview {
             display: none;
@@ -60,35 +63,41 @@
             /**/
         }
         </style>
+        <script src="{{ url_for('static', filename='jquery-2.2.0.js') }}"></script>
     </head>
 
-    <body background="{{ url_for('static', filename='board.png') }}">
-        <canvas id="canvas" ondblclick="clearCanvas()">
+    <body background="{{ url_for('static', filename='blackboard.gif') }}">
+        <canvas id="canvas">
             你的瀏覽器不支援Canvas。<!-- onmousedown="mousedownHandler(event)" onmousemove="mousemoveHandler(event)" onmouseup="mouseupHandler(event)" -->
         </canvas>
         <div id="preview"></div>
         <div id="contextMenu">
-            <div class="changeShape">形狀:鉛筆</div>
+            <div id="changemode" class="changeMode">模式:正常</div>
+            <div id="changeshape" class="changeShape">形狀:畫筆</div>
             <div onmousedown="changeWidth();">寬度</div>
             <div onmousedown="changeColor();">顏色</div>
+            <div onmousedown="clearCanvas();">清空</div>
 
         </div>
         <script type="text/javascript">
+        // console.group()
         var context;
+
         var mode = 0;//0:正常 1:移動地圖
         var status = 0;//
-        var shape = 0;//0:畫筆 1:直線 3:多邊形 4:矩形
+        var shape = 0;//0:畫筆 1:直線 2:圓形 3:多邊形 4:矩形 5:橡皮擦
         var paint = false;
         var line = false;
-        var lineWidth = 20;
+        var lineWidth = 5;
         var lineColor = "red";
         var startpoint = {x : 0, y : 0};
+
         var canvashistory = new Array();
         var canvasstep = -1;
-        var changeshape = document.getElementsByClassName("changeShape")[0]
+
         window.onload = function() {
             context = canvas.getContext('2d');
-            window.addEventListener('keydown', doKeyDown, true);
+            // window.addEventListener('keydown', doKeyDown, true);
             resize();
         };
         window.onresize = function() {
@@ -125,13 +134,22 @@
             }
             changeshape.textContent = "形狀:" + shapeList[mode];
         }
+        changemode.onmousedown = function changeMode() {
+            mode = (mode + 1) % 5; //模式(0~4)
+            modeList = {
+                0 : "正常",
+                1 : "移動"
+            }
+            changemode.textContent = "模式:" + modeList[mode];
+        }
         //滑鼠事件
         document.onmousedown = function mousedownHandler(e) {
+            // console.dir(e);
             if (contextMenu.style.display == "block") {
                 contextMenu.style.display = "none";
-                
+
             }
-            if (e.button == 0) {
+            if ((e.button == 0) && (e.toElement == canvas)) {
                 startpoint.x = e.clientX;
                 startpoint.y = e.clientY;
                 // cross(startpoint.x, startpoint.y, lineWidth);
@@ -189,12 +207,15 @@
                 canvaspush();
             }
         }
-
+        document.onmousewheel = function mousewhellHandler(e) {
+            console.log("滾輪" + e.wheelDelta);
+            // console.dir(e);
+        }
         // 右鍵選單
         document.oncontextmenu = function contextmenuHandler(e) {
             contextMenu.style.display = "block";
-            contextMenu.style.left = e.clientX + "px";
-            contextMenu.style.top = e.clientY + "px";
+            contextMenu.style.left = (e.clientX - contextMenu.offsetWidth / 2) + "px";
+            contextMenu.style.top = (e.clientY - contextMenu.offsetHeight / 2) + "px";
             e.preventDefault();
         }
         // 畫十字(debug)
@@ -223,7 +244,7 @@
             clearCanvas();
             // 基本圖
             if (canvasstep >= 0) {
-                console.log("返回步驟" + canvasstep);
+                console.log("回到步驟" + canvasstep);
                 canvasstep --;
             } else {
                 alert("已回復到最前面");
@@ -250,14 +271,16 @@
         function clearCanvas() {
             context.clearRect(0, 0, canvas.width, canvas.height);
         }
-
-        function doKeyDown(e) {
+        // 鍵盤監控
+        window.onkeydown = function doKeyDown(e) {
             var keyID = e.keyCode ? e.keyCode : e.which;
             console.log(keyID);
             if (keyID == 116) { // F5
                 clearCanvas();
                 e.preventDefault();
 
+            } else if (keyID == 123) { // F12
+                prompt('請輸入主控台密碼(誤)：')
             } else if (keyID == 90 && e.ctrlKey) { // Ctrl + Z
                 undo();
                 e.preventDefault();
