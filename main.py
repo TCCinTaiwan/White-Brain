@@ -1,5 +1,5 @@
 import random
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, send_file
 from flask import send_from_directory, url_for, jsonify
 import base64
 import os
@@ -29,11 +29,13 @@ def showBrain(room_id):
         user_id = request.form['user_id']
         DataURL = request.form['DataURL'] # datauri = 'data:image/png;base64,iVBORw0K...'
         ImageData = base64.b64decode(re.search(r'base64,(.*)', DataURL).group(1).encode())
-        with open('static/room/' + room_id + '_' + user_id + '.png', 'wb') as output:
+        with open('static\\room\\' + room_id + '_' + user_id + '.png', 'wb') as output:
             output.write(ImageData)
+        if not room_id in room_status:
+            room_status[room_id] = {}
         room_status[room_id][user_id] = str(datetime.now())
         print(str(datetime.now()) + str(room_id) + "房間，" + str(user_id) + "上傳圖片", file = sys.stderr)
-        return "<img src=" + url_for('static', filename= 'room/' + room_id + '_' + user_id + '.png') + " />"
+        return "" # send_file('static\\room\\' + room_id + '_' + user_id + '.png', mimetype = 'image/png')
     else:
         user_id = random.randrange(0, 11, 2)
         print("使用" + str(room_id) + "房間，ID:" + str(user_id), file = sys.stderr)
@@ -41,7 +43,7 @@ def showBrain(room_id):
 @app.route('/b_status/<room_id>', methods = ["POST", "GET"]) # readonly
 def showBrainStatus(room_id):
     if request.method == "POST":
-        user_id = request.form['uid']
+        user_id = request.form['uid'] # 人數, 更新時間
         print(room_id + "房" + user_id + "，要求", room_status[room_id], file = sys.stderr)
         return jsonify({room_id : room_status[room_id]})
     else:
