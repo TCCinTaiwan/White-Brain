@@ -38,7 +38,7 @@ body {
 #contextMenu {
     size: 50px 100px;
     background: white;
-    z-index: 200;
+    z-index: 200; /* 大於畫布 */
     position: fixed;
     display: none;
 }
@@ -57,4 +57,18 @@ body {
 }
 #changeshape {
     /**/
+}
+/*圖片自動縮放*/
+.box #map{
+    background: white;
+    border: solid 1px;
+    border-radius: 5px;
+    z-index: 300; /* 大於選單 */
+    position: fixed;
+    right: 0;
+    top: 0;
+    max-width: 30%;
+    max-height: 30%;
+    width: 200px;
+    height: 200px;
 }

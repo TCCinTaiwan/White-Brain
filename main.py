@@ -44,11 +44,17 @@ def showBrain(room_id):
 def showBrainStatus(room_id):
     if request.method == "POST":
         user_id = request.form['uid'] # 人數, 更新時間
-        print(room_id + "房" + user_id + "，要求", room_status[room_id], file = sys.stderr)
-        return jsonify({room_id : room_status[room_id]})
+        if not room_id in room_status:
+            return jsonify({})
+        else:
+            print(room_id + "房" + user_id + "，要求", room_status[room_id], file = sys.stderr)
+            return jsonify({room_id : room_status[room_id]})
     else:
-        print(room_id + "房(使用者)，要求", room_status[room_id], file = sys.stderr)
-        return jsonify({room_id : room_status[room_id]})
+        if not room_id in room_status:
+            return jsonify({})
+        else:
+            print(room_id + "房(使用者)，要求", room_status[room_id], file = sys.stderr)
+            return jsonify({room_id : room_status[room_id]})
 @app.route('/b2/<room_id>') # readonly
 def showReadOnlyTestBrain(room_id):
     return render_template('brainReadOnly.htm')

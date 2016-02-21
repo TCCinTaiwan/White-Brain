@@ -1,37 +1,33 @@
 console.groupCollapsed('步驟1(載入網頁)');
 var context;
-var mode = 0;//0:正常 1:移動地圖
-var shape = 0;//0:畫筆 1:直線 2:圓形 3:多邊形 4:矩形 5:橡皮擦
+var mode = 0; //0:正常 1:移動地圖
+var shape = 0; //0:畫筆 1:直線 2:圓形 3:多邊形 4:矩形 5:橡皮擦
 var leftbutton = false; //滑鼠左鍵是否按下
 var startpoint = {
-    x : 0,
-    y : 0
+    x: 0,
+    y: 0
 }; //起點
-var canvashistory = new Array();
+var canvashistory = [];
 var canvasstep = -1;
 var rid = location.pathname.replace("/b/", "");
 var uid;
-// localStorage.setItem("Write's Brain", JSON.stringify({rid : rid, uid : uid}));
-// if (localStorage.getItem("Write's Brain") != null) uid = JSON.parse(localStorage.getItem("Write's Brain")).uid;
-// uid = uid == undefined ? prompt('ID:') : uid;
-// window.onload = function() {
-// };
+// 初始化畫布
 function initCanvas() {
     context = canvas.getContext('2d');
     context.strokeStyle = $('#changestrokestyle').data('colorpicker').color;
     context.fillStyle = $('#changefillstyle').data('colorpicker').color;
     context.lineWidth = 5;
-    context.lineJoin = 'round'; //bevel:斜角 miter:尖角
-    context.lineCap = 'round'; //butt:平直 square:正方形
+    context.lineJoin = 'round'; //bevel: 斜角, miter: 尖角
+    context.lineCap = 'round'; //butt: 平直, square: 正方形
     clearCanvas();
-    img = new Image();
-    img.onload = function(){
-        context.drawImage(img, 0, 0); // Or at whatever offset you like
-        img = null;
+    var img = new Image();
+    map.onload = function imgLoadHander() {
+        context.drawImage(map, 0, 0); // Or at whatever offset you like
     };
-    img.src = '/room/' + rid + '_' + uid + '.png';
+    img.src = '/room/' + rid + '_' + uid + '.png?' + new Date().getTime();
+    map.src = img.src;
 }
-window.onresize = function() {
+window.onresize = function ResizeHander() {
     resize();
 };
 function resize() { //保持畫布為視窗大小
@@ -42,37 +38,29 @@ function resize() { //保持畫布為視窗大小
         canvas.height = window.innerHeight;
     }
 }
-function changeWidth() {
-    _lineWidth = Number(prompt('請輸入畫筆寬度：'));
-    if (_lineWidth != '') {
-        _lineWidth = (_lineWidth < 1) ? 1 : _lineWidth;
-        context.lineWidth = _lineWidth;
-        preview.style.borderTopWidth = _lineWidth + "px";
-        preview.style.borderRadius = _lineWidth+ "px";
-    }
-}
 //滑鼠事件
 document.onmousedown = function MouseDownHandler(e) {
     console.log('滑鼠按下%O', e);
     leftbutton = e.button == 0;
-    // 選單自動消失
-    if (contextMenu.style.display == "block" && (e.path.indexOf(contextMenu) > -1 && e.toElement.tagName != 'I' || e.toElement == canvas) && leftbutton) {
-        contextMenu.style.display = "none";
-        leftbutton = false;
-    } else if (leftbutton && (e.toElement == canvas)) {
-        startpoint.x = e.clientX;
-        startpoint.y = e.clientY;
-        if (mode == 0) {
+    if (leftbutton) {
+        if (contextMenu.style.display == "block" && (e.path.indexOf(contextMenu) > -1 && e.toElement.tagName != 'I' || e.toElement == canvas)) { // 選單取消
+            contextMenu.style.display = "none";
+            leftbutton = false; //假如是取消選單就不執行左鍵
+        } else if ((e.toElement == canvas)) {
+            startpoint.x = e.clientX;
+            startpoint.y = e.clientY;
             // cross(startpoint.x, startpoint.y, lineWidth);
-            context.beginPath();
-            context.moveTo(startpoint.x, startpoint.y);
-        } else if (mode == 1) {
-            preview.style.left = startpoint.x + "px";
-            preview.style.top = startpoint.y + "px";
-            preview.style.width = "0px";
-            preview.style.display = "block";
-        } else if (mode == 5){
-            //要原地清空喔!!!
+            if (mode == 0) { //鉛筆
+                context.beginPath(); //
+                context.moveTo(startpoint.x, startpoint.y);
+            } else if (mode == 1) { //直線
+                preview.style.left = startpoint.x + "px";
+                preview.style.top = startpoint.y + "px";
+                preview.style.width = "0px";
+                preview.style.display = "block";
+            } else if (mode == 5){
+                //要原地清空喔!!!
+            }
         }
     }
 }
@@ -82,9 +70,9 @@ document.onmousemove = function MouseMoveHandler(e) {
             var x = e.clientX;
             var y = e.clientY;
             context.lineTo(x, y);
-            context.stroke();//繪製路徑
+            context.stroke(); //繪製路徑
         } else if (mode == 1) { //直線
-            ab = Math.sqrt(Math.pow(e.clientX - startpoint.x, 2) + Math.pow(e.clientY - startpoint.y, 2))+ context.lineWidth;
+            ab = Math.sqrt(Math.pow(e.clientX - startpoint.x, 2) + Math.pow(e.clientY - startpoint.y, 2)) + context.lineWidth;
             preview.style.width = ab + "px"; //線長
             rad = Math.atan((startpoint.y - e.clientY) / (startpoint.x - e.clientX));
             // console.log("神奇的角度:" + rad * 180 / Math.PI); //顯示角度
@@ -93,8 +81,8 @@ document.onmousemove = function MouseMoveHandler(e) {
                 y: (startpoint.x < e.clientX ? -1 : 1) * Math.cos(rad) * context.lineWidth / 2
             };
             preview.style.margin = previewmargin.x + "px " + previewmargin.y + "px";
-            preview.style.transform = "rotate(" + (rad + ((startpoint.x >= e.clientX) ? Math.PI : 0)) + "rad)";//rad
-        } else if (mode == 5) { //eraser
+            preview.style.transform = "rotate(" + (rad + ((startpoint.x >= e.clientX) ? Math.PI : 0)) + "rad)"; //rad
+        } else if (mode == 5) { //橡皮擦
             eraser(e.clientX, e.clientY, context.lineWidth);
             startpoint = {
                 x : e.clientX,
@@ -105,19 +93,34 @@ document.onmousemove = function MouseMoveHandler(e) {
 }
 document.onmouseup = function MouseUpHandler(e) {
     console.log('滑鼠放開%O', e);
-    if (leftbutton) {
-        leftbutton = e.button != 0;
-        if (!leftbutton){
-            if (mode = 0) {
-                context.lineTo(e.clientX, e.clientY);
-                context.stroke();//繪製路徑
-                context.closePath();
-            } else if (mode == 1) {
-                preview.style.display = "none";
-                line = false;
-            }
-            canvaspush("MouseUp");
+    if (e.button == 0) {
+        leftbutton = false;
+        if (mode = 0) {
+            context.lineTo(e.clientX, e.clientY);
+            context.stroke(); //繪製路徑
+            context.closePath(); //
+        } else if (mode == 1) {
+            preview.style.display = "none";
+        } else if (mode == 2) { //圓形
+            context.beginPath();
+            context.arc(
+                startpoint.x,
+                startpoint.y,
+                Math.sqrt(Math.pow((startpoint.x - e.clientX), 2) + Math.pow((startpoint.y - e.clientY), 2)),
+                0,
+                Math.PI * 2,
+                true
+            );
+            context.closePath();
+            context.stroke();
+            preview.style.display = "none";
+        } else if (mode == 4) { //矩形
+            context.beginPath();
+            context.strokeRect(startpoint.x ,startpoint.y, e.clientX - startpoint.x,e.clientY - startpoint.y);
+            context.closePath();
+            preview.style.display = "none";
         }
+        canvaspush("MouseUp");
     }
 }
 document.onmousewheel = function MousewhellHandler(e) {
@@ -141,10 +144,11 @@ function upload() {
             DataURL : canvas.toDataURL()
         },
         type: 'POST',
-        success: function(response) {
+        success: function _uploadsuccess(response) {
             console.log('上傳成功!!' + response);
+            initCanvas();
         },
-        error: function(error) {
+        error: function _uploaderror(error) {
             console.log('上傳錯誤:' + error);
         }
     });
@@ -157,9 +161,22 @@ function cross(x, y, size) {
     context.lineTo(x + size / 2, y);
     context.moveTo(x, y - size / 2);
     context.lineTo(x, y + size / 2);
-    context.stroke();//繪製路徑
+    context.stroke(); //繪製路徑
     context.closePath();
     context.lineWidth = size;
+}
+function changeWidth() {
+    _lineWidth = Number(prompt('請輸入畫筆寬度：'));
+    if (_lineWidth != '') {
+        _lineWidth = (_lineWidth < 1) ? 1 : _lineWidth;
+        context.lineWidth = _lineWidth;
+        preview.style.borderTopWidth = _lineWidth + "px";
+        preview.style.borderRadius = _lineWidth+ "px";
+    }
+}
+// 清空畫布
+function clearCanvas() {
+    context.clearRect(0, 0, canvas.width, canvas.height);
 }
 // 加入步驟
 function canvaspush(summary) {
@@ -169,9 +186,9 @@ function canvaspush(summary) {
         canvashistory.length = canvasstep;
     }
     canvashistory.push(context.getImageData(0, 0, canvas.width, canvas.height));
-    console.log("步驟%d%s:%O", (canvasstep + 1), summary != '' ? '(' + summary + ')' : '', canvashistory);
-    console.groupEnd()
-    console.groupCollapsed("步驟" + (canvasstep + 2))
+    console.log("步驟%d%s: %O", (canvasstep + 1), summary != '' ? '(' + summary + ')' : '', canvashistory);
+    console.groupEnd();
+    console.groupCollapsed("步驟" + (canvasstep + 2) + (summary != '' ? '(' + summary + ')' : ''));
     upload();
 }
 // 上一步
@@ -202,10 +219,6 @@ function redo() {
         console.assert(canvasstep < canvashistory.length - 1, "已重做所有動作(步驟" + (canvasstep + 1) + "/" + canvashistory.length + ")");
     }
 
-}
-// 清空畫布
-function clearCanvas() {
-    context.clearRect(0, 0, canvas.width, canvas.height);
 }
 // 橡皮擦
 function eraser(_x, _y, _size) {
@@ -255,7 +268,7 @@ window.onkeydown = function KeyDownHander(e) {
         toggleFullScreen();
         e.preventDefault();
     } else if (e.keyCode == 123) { // F12
-        // prompt('請輸入主控台密碼(誤)：')
+        // prompt('請輸入主控台密碼(誤)：');
     } else if (e.keyCode == 90 && e.ctrlKey) { // Ctrl + Z
         undo();
         e.preventDefault();
@@ -270,6 +283,7 @@ window.onkeydown = function KeyDownHander(e) {
 window.onkeyup = function KeyUpHander(e) {
     console.log('放開按鍵：' + (e.ctrlKey ? 'Ctrl' + (e.keyCode == 13 ? '' : '+') : '') + String.fromCharCode(e.keyCode) + '(' + e.keyCode + ')', e);
 }
+
 // 全螢幕
 function toggleFullScreen() {
     if (!document.fullscreenElement && !document.mozFullScreenElement && !document.webkitFullscreenElement && ! document.msFullscreenElement ) {

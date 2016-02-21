@@ -1,6 +1,13 @@
 <!DOCTYPE html >
 <html lang="zh-TW">
     <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <meta http-equiv="content-language" content="zh-tw">
+        <meta http-equiv="default-style" content="Main Style">
+        <!-- <meta http-equiv="refresh "content="1; url=http://203.64.91.82"> -->
+        <meta http-equiv="X-UA-Compatible"content="IE=edge,chrome=1">
+
         <meta name="application-name" content="Write's Brain" />
         <meta name="author" content="TCC" />
         <meta name="description" content="OnlineWhiteboard" />
@@ -8,15 +15,11 @@
         <meta name="revised" content="2016-02-21" />
         <!-- Mobile-friendly viewport -->
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-        <meta http-equiv="content-language" content="zh-tw">
-        <meta http-equiv="default-style" content="Main Style">
-        <!-- <meta http-equiv="refresh "content="1; url=http://203.64.91.82"> -->
-        <meta http-equiv="X-UA-Compatible" content="chrome=1">
 
         <title>Write's Brain</title>
 
         <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
+
         <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" title="Main Style">
         <link rel="alternate stylesheet" href="{{ url_for('static', filename='css/main.css') }}" title="Main Style">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.min.css') }}">
@@ -40,30 +43,32 @@
         <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     </head>
     <body background="{{ url_for('static', filename='img/blackboard.jpg') }}">
+        <div class="box">
+            <img id="map" alt="" />
+        </div><!-- 小地圖 -->
         <canvas id="canvas">你的瀏覽器不支援Canvas。</canvas>
         <!-- <canvas id="canvas2">你的瀏覽器不支援Canvas。</canvas> -->
-        <div id="preview"></div>
         <div id="contextMenu">
-            <div id="changemode" class=""><i class="fa fa-mouse-pointer"></i><!-- 模式:正常 --></div>
-            <div id="changeshape" class=""><i class="fa fa-pencil"></i><!-- 形狀:畫筆 --></div>
-            <div onmousedown="changeWidth();">寬度</div>
-            <div id="changestrokestyle" class="input-group" data-color="rgb(255, 255, 255)">
+            <div id="changemode" class=""><i class="fa fa-mouse-pointer"></i><!-- 模式: 正常 --></div>
+            <div id="changeshape" class=""><i class="fa fa-pencil"></i><!-- 形狀: 畫筆 --></div>
+            <div id="changewidth">寬度</div>
+            <div id="changestrokestyle" class="input-group">
                 <span class="input-group-addon" style="display: inline;padding: 0 0;"><i style="width: 56px;"></i></span>
             </div>
             <div id="changefillstyle" class="input-group">
                 <span class="input-group-addon" style="display: inline;padding: 0 0;"><i style="width: 56px;"></i></span>
             </div>
-            <!-- <div class="colorpicker">顏色</div>onmousedown="changeColor();" -->
-            <div onmousedown="clearCanvas();">清空</div>
+            <div id="clearcanvas">清空</div>
             <div id="changeroom">更換房間</div>
         </div>
+        <div id="preview"></div>
         <script>
             $(function(){
                 colorpickeroptions = {
                     horizontal: false, // horizontal mode layout ?
-                    inline: false, //forces to show the colorpicker as an inline element
-                    color: "#FF0000", //forces a color
-                    format: 'rgba', //forces a format
+                    inline: false, // forces to show the colorpicker as an inline element
+                    color: "#FF0000", // forces a color
+                    format: 'rgba', // forces a format
                     input: 'input', // children input selector
                     container: false, // container selector
                     component: '.add-on, .input-group-addon', // children component selector
@@ -107,14 +112,7 @@
                             callTop: false
                         }
                     },
-                    template:
-                    '<div class="colorpicker dropdown-menu">' +
-                        '<div class="colorpicker-saturation"><i><b></b></i></div>' +
-                        '<div class="colorpicker-hue"><i></i></div>' +
-                        '<div class="colorpicker-alpha"><i></i></div>' +
-                        '<div class="colorpicker-color"><div /></div>' +
-                        '<div class="colorpicker-selectors"></div>' +
-                    '</div>',
+                    template: '<div class="colorpicker dropdown-menu"><div class="colorpicker-saturation"><i><b></b></i></div><div class="colorpicker-hue"><i></i></div><div class="colorpicker-alpha"><i></i></div><div class="colorpicker-color"><div /></div><div class="colorpicker-selectors"></div></div>',
                     align: 'right',
                     customClass: null,
                     colorSelectors: {
@@ -131,14 +129,16 @@
                         gray: "#D3D3D3"
                     }
                 };
-                $('#changefillstyle').colorpicker(colorpickeroptions).on('changeColor', function(e) {
+                $('#changefillstyle').colorpicker(
+                    colorpickeroptions
+                ).on('changeColor', function changeFillStyleHander(e) {
                     context.fillStyle = e.color.toHex();
                     // context.globalAlpha = e.color.a;
                     preview.style.backgroundColor = e.color.toRGB();
                 });
                 $('#changestrokestyle').colorpicker(
                     colorpickeroptions
-                ).on('changeColor', function(e) {
+                ).on('changeColor', function changeStrokeStyleHander(e) {
                     context.strokeStyle = e.color.toHex();
                     context.globalAlpha = e.color.a;
                     preview.style.borderColor = e.color.toRGB();
@@ -151,7 +151,7 @@
                     rid = prompt('房間ID:');
                     if (rid != null){
                         location.pathname = "/b/" + rid;
-                        localStorage.setItem("Write's Brain", JSON.stringify({rid : rid, uid : uid}));
+                        localStorage.setItem("Write's Brain", JSON.stringify({rid: rid, uid: uid}));
                     }
                 }
                 $("#changeshape")[0].onmousedown = function changeShape() {
@@ -174,6 +174,8 @@
                     mode = (mode + 1) % modeList.length; //模式(0~2)
                     changemode.textContent = "模式:" + modeList[mode];
                 }
+                $("#clearcanvas").onmousedown = clearCanvas;
+                $("#changewidth").onmousedown = changeWidth;
             });
         </script>
     </body>
