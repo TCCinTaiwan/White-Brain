@@ -19,6 +19,7 @@
         <title>Write's Brain</title>
 
         <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
+<<<<<<< HEAD
 
         <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" title="Main Style">
         <link rel="alternate stylesheet" href="{{ url_for('static', filename='css/main.css') }}" title="Main Style">
@@ -165,6 +166,435 @@
                 $("#clearcanvas")[0].onmousedown = clearCanvas;
                 $("#changewidth")[0].onmousedown = changeWidth;
             });
+=======
+        <style type="text/css">
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow-x: hidden;
+            overflow-y: hidden;
+            background-repeat: no-repeat;
+            /*background: black;*/
+        }
+        /* 主畫布 */
+        #canvas {
+            position: fixed;
+            cursor: pointer; /* 保持鼠標 */
+            background: transparent; /* 背景透明 */
+        }
+        #canvas:active {/* 交給javascript */
+            cursor: crosshair; /* 保持鼠標 */
+        }
+        /* 預覽線 */
+        #preview {
+            display: none;
+            width: 0px; /* 在這裡width代表線的長度 */
+            cursor: pointer; /* 保持鼠標 */
+            border-top-width: 1px;
+            border-top-style: solid;
+            border-top-color: red;
+            /*border-bottom-width: 1px;
+            border-bottom-style: dashed;
+            border-bottom-color: blue;*/
+            position: fixed;
+            transform-origin: left;
+            z-index: 100; /* 保持在上層，理論上這個數字要比選單小，比畫布大 */
+        }
+        #prview.line {
+
+        }
+        #contextMenu {
+            size: 50px 100px;
+            background: white;
+            z-index: 200;
+            position: fixed;
+            display: none;
+        }
+        #contextMenu > div {
+            background: white;
+            padding: 2px 10px;
+            border-width: 1px;
+            border-color: grey;
+            border-style: solid;
+        }
+        #contextMenu > div:hover {
+            background-color: grey;
+        }
+        #changeshape {
+            /**/
+        }
+        #changeshape {
+            /**/
+        }
+        </style>
+        <script src="{{ url_for('static', filename='jquery-2.2.0.js') }}"></script>
+        <link href="{{ url_for('static', filename='bootstrap.min.css') }}" rel="stylesheet">
+        <link href="{{ url_for('static', filename='css/bootstrap-colorpicker.min.css') }}" rel="stylesheet">
+
+    </head>
+    <body background="{{ url_for('static', filename='blackboard.gif') }}"><!-- blackboard.gif -->
+        <canvas id="canvas">你的瀏覽器不支援Canvas。</canvas>
+        <canvas id="canvas2">你的瀏覽器不支援Canvas。</canvas>
+        <div id="preview"></div>
+        <div id="contextMenu">
+            <div id="changemode" class="">模式:正常</div>
+            <div id="changeshape" class="">形狀:畫筆</div>
+            <div onmousedown="changeWidth();">寬度</div>
+            <div onmousedown="changeColor();">顏色</div>
+            <div onmousedown="clearCanvas();">清空</div>
+            <div id="changeroom">更換房間</div>
+
+        </div>
+        <script type="text/javascript">
+        // console.group()
+        var context;
+        var mode = 0;//0:正常 1:移動地圖
+        var status = 0;//
+        var shape = 4;//0:畫筆 1:直線 2:圓形 3:多邊形 4:矩形 5:橡皮擦
+        var leftbutton = false; //滑鼠左鍵是否按下
+        var line = false;
+        var lineWidth = 5;
+        var lineColor = "red";
+        var startpoint = {x : 0, y : 0};
+        var previouspoint = {x : 0, y : 0};
+        var canvasEraser = false;
+        var canvassquare=false;
+        var canvascircle=false;
+        var canvashistory = new Array();
+        var canvasstep = -1;
+        var rid = location.pathname.replace("/b/", "");
+        var uid = {{ user_id }};
+        localStorage.setItem("Write's Brain", JSON.stringify({rid : rid, uid : uid}));
+        window.onload = function() {
+            // if (localStorage.getItem("Write's Brain") != null) uid = JSON.parse(localStorage.getItem("Write's Brain")).uid;
+            // uid = uid == undefined ? prompt('ID:') : uid;
+            context = canvas.getContext('2d');
+            // window.addEventListener('keydown', doKeyDown, true);
+            resize();
+            initCanvas();
+        };
+        function initCanvas() {
+            clearCanvas();
+            img = new Image();
+            img.onload = function(){
+                context.drawImage(img, 0, 0); // Or at whatever offset you like
+                img = null;
+            };
+            img.src = '/room/' + rid + '_' + uid + '.png';
+        }
+        window.onresize = function() {
+            resize();
+        };
+        function resize() { //保持畫布為視窗大小
+            if (canvas.width < window.innerWidth) {
+                canvas.width = window.innerWidth;
+            }
+            if (canvas.height < window.innerHeight) {
+                canvas.height = window.innerHeight;
+            }
+        }
+        function changeWidth() {
+            _lineWidth = Number(prompt('請輸入畫筆寬度：'));
+            if (_lineWidth != '') {
+                lineWidth = (_lineWidth < 1) ? 1 : _lineWidth;
+            }
+        }
+        function changeColor() {
+            _lineColor = prompt('請輸入畫筆顏色：');
+            if (_lineColor != '') {
+                lineColor = _lineColor;
+            }
+        }
+        changeroom.onmousedown = function changeRoom() {
+            rid = prompt('房間ID:')
+            location.pathname = "/b/" + rid;
+            localStorage.setItem("Write's Brain", JSON.stringify({rid : rid, uid : uid}));
+        }
+        changeshape.onmousedown = function changeShape() {
+            shapeList = [
+                "畫筆",
+                "直線",
+                "園",
+                "多邊形",
+                "矩形",
+                "橡皮擦"
+            ]
+            shape = (shape + 1) % shapeList.length; //形狀(0~5)
+            changeshape.textContent = "形狀:" + shapeList[shape];
+        }
+        changemode.onmousedown = function changeMode() {
+            modeList = {
+                0 : "正常",
+                1 : "移動"
+            }
+            mode = (mode + 1) % modeList.length; //模式(0~2)
+            changemode.textContent = "模式:" + modeList[mode];
+        }
+        //滑鼠事件
+        document.onmousedown = function mousedownHandler(e) {
+            // console.dir(e);
+            leftbutton = e.button == 0
+            if (contextMenu.style.display == "block") {
+                contextMenu.style.display = "none";
+
+            }
+            startpoint.x = e.clientX;
+            startpoint.y = e.clientY;
+            if (leftbutton && canvasEraser){
+                previouspoint = startpoint;
+            } 
+            else if(leftbutton && canvassquare){
+
+                context.beginPath();
+                context.strokeStyle = lineColor; // 'blue'
+                context.lineWidth = lineWidth;
+                context.lineJoin = 'round'; //bevel:斜角 miter:尖角
+                context.lineCap = 'round'; //butt:平直 square:正方形
+                if (mode == 4) {
+                    preview.style.height = "100px";
+                }
+            } 
+            else if(leftbutton && canvascircle){
+
+                context.beginPath();
+                context.strokeStyle = lineColor; // 'blue'
+                context.lineWidth = lineWidth;
+                context.lineJoin = 'round'; //bevel:斜角 miter:尖角
+                context.lineCap = 'round'; //butt:平直 square:正方形
+                // if (mode == 4) {
+                //     preview.style.height = "100px";
+                // }
+            } else if (leftbutton && (e.toElement == canvas)) {
+                // cross(startpoint.x, startpoint.y, lineWidth);
+                context.beginPath();
+                context.strokeStyle = lineColor; // 'blue'
+                context.lineWidth = lineWidth;
+                context.lineJoin = 'round'; //bevel:斜角 miter:尖角
+                context.lineCap = 'round'; //butt:平直 square:正方形
+                context.moveTo(startpoint.x, startpoint.y);
+                if (e.shiftKey) {
+                    line = true;
+                    preview.style.borderTopWidth = lineWidth + "px";//(lineWidth / 2)
+                    preview.style.borderRadius = lineWidth+ "px";
+                    preview.style.width = "0px";
+                    preview.style.left = startpoint.x + "px";
+                    preview.style.borderColor = lineColor;
+                    preview.style.top = startpoint.y + "px";
+                    preview.style.display = "block";
+                }
+            }
+        }
+
+        document.onmousemove = function mousemoveHandler(e) {
+            if (leftbutton) {
+                if (canvasEraser) {
+                    eraser(e.clientX, e.clientY, lineWidth);
+                    previouspoint = {x : e.clientX, y : e.clientY};
+                } else {
+                    if (line) {
+                        var ab = Math.sqrt(Math.pow(e.clientX - startpoint.x, 2) + Math.pow(e.clientY - startpoint.y, 2))+ lineWidth;
+                        rad = Math.atan((startpoint.y - e.clientY) / (startpoint.x - e.clientX));
+                        preview.style.width = ab + "px";
+
+                        preview.style.margin = ((startpoint.x < e.clientX ? -lineWidth : lineWidth) * Math.sin(rad) - lineWidth) / 2 + "px " + (startpoint.x < e.clientX ? -lineWidth : lineWidth) * Math.cos(rad) / 2 + "px";
+                        // console.log(rad * 180 / Math.PI); //顯示角度
+                        preview.style.transform = "rotate(" + (rad + ((startpoint.x >= e.clientX) ? Math.PI : 0)) + "rad)";//rad
+                        return;
+                    }
+                    else if(!canvassquare&&!canvascircle){
+                        var x = e.clientX;
+                        var y = e.clientY;
+                        context.lineTo(x, y);
+                        context.stroke();//繪製路徑
+                    }
+                }
+            }
+        }
+        document.onmouseup = function mouseupHandler(e) {
+            if (leftbutton) {
+                if (!canvasEraser && !canvassquare && canvascircle) {
+                    context.lineTo(e.clientX, e.clientY);
+                    context.stroke();//繪製路徑
+                    context.closePath();
+                }
+                if(canvascircle){
+                    context.arc(
+                        startpoint.x,
+                        startpoint.y,
+                        Math.sqrt(Math.pow((startpoint.x - e.clientX), 2) + Math.pow((startpoint.y - e.clientY), 2)),
+                        0,
+                        Math.PI*2,
+                        true
+                    );
+                    context.stroke();
+                }
+                if (canvassquare) {
+                    context.strokeRect(startpoint.x ,startpoint.y, e.clientX - startpoint.x,e.clientY- startpoint.y);
+                }
+                leftbutton = e.button != 0
+                if (line) {
+                    preview.style.display = "none";
+                    line = false;
+                }
+                canvaspush();
+            }
+        }
+        document.onmousewheel = function mousewhellHandler(e) {
+            console.log("滾輪" + e.wheelDelta);
+            // console.dir(e);
+        }
+        // 右鍵選單
+        document.oncontextmenu = function contextmenuHandler(e) {
+            contextMenu.style.display = "block";
+            contextMenu.style.left = (e.clientX - contextMenu.offsetWidth / 2) + "px";
+            contextMenu.style.top = (e.clientY - contextMenu.offsetHeight / 2) + "px";
+            e.preventDefault();
+        }
+        function checkStatus() {
+
+                Date.parse(Date()) < Date.parse("2016-02-20 18:33.00")
+        }
+        function upload() {
+            $.ajax({
+                url: '/b/' + rid,
+                data: {
+                    user_id : uid,
+                    DataURL : canvas.toDataURL()
+                },
+                type: 'POST',
+                success: function(response) {
+                    console.log(response);
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+        }
+        // 畫十字(debug)
+        function cross(x, y, size) {
+            context.beginPath();
+            context.lineWidth = 1;
+            context.moveTo(x - size / 2, y);
+            context.lineTo(x + size / 2, y);
+            context.moveTo(x, y - size / 2);
+            context.lineTo(x, y + size / 2);
+            context.stroke();//繪製路徑
+            context.closePath();
+        }
+        // 加入步驟
+        function canvaspush() {
+            canvasstep ++;
+            if (canvasstep < canvashistory.length){
+                canvashistory.length = canvasstep;
+            }
+            canvashistory.push(context.getImageData(0, 0,canvas.width, canvas.height));
+            console.log("步驟" + (canvasstep + 1));
+            upload();
+            // console.dir(canvashistory);
+        }
+        // 上一步
+        function undo() {
+            clearCanvas();
+            // 基本圖
+            if (canvasstep >= 0) {
+                console.log("回到步驟" + canvasstep);
+                canvasstep --;
+            } else {
+                alert("已回復到最前面");
+            }
+            if (canvasstep >= 0) {
+                context.putImageData(canvashistory[canvasstep], 0, 0);
+            }
+            upload();
+        }
+        // 下一步
+        function redo() {
+            // 基本圖
+            if (canvasstep < canvashistory.length - 1) {
+                clearCanvas();
+                canvasstep ++;
+                console.log("重做步驟" + (canvasstep + 1));
+                context.putImageData(canvashistory[canvasstep], 0, 0);
+            } else {
+                alert("已重做所有動作");
+            }
+
+        }
+        // 清空畫布
+        function clearCanvas() {
+            context.clearRect(0, 0, canvas.width, canvas.height);
+        }
+        // 橡皮擦
+        function eraser(_x, _y, _size) {
+            if (previouspoint.x != 0 && previouspoint.y != 0) {
+                //获取两个点之间的剪辑区域四个端点
+                var asin = _size * Math.sin(Math.atan((_y - previouspoint.y) / (_x - previouspoint.x)));
+                var acos = _size * Math.cos(Math.atan((_y - previouspoint.y) / (_x - previouspoint.x)))
+                var x3 = previouspoint.x + asin;
+                var y3 = previouspoint.y - acos;
+                var x4 = previouspoint.x - asin;
+                var y4 = previouspoint.y + acos;
+
+                var x5 = _x + asin;
+                var y5 = _y - acos;
+                var x6 = _x - asin;
+                var y6 = _y + acos;
+
+                // //清除兩點間矩形內容
+                context.save()
+                context.beginPath()
+                context.moveTo(x3, y3);
+                context.lineTo(x5, y5);
+                context.lineTo(x6, y6);
+                context.lineTo(x4, y4);
+                context.closePath();
+                context.clip();
+                clearCanvas();
+                context.restore();
+
+                // 清除當下點
+                context.save()
+                context.beginPath()
+                context.arc(_x, _y, _size, 0, 2 * Math.PI);
+                context.closePath();
+                context.clip();
+                clearCanvas();
+                context.restore();
+            }
+        }
+        // 鍵盤監控
+        window.onkeydown = function doKeyDown(e) {
+            var keyID = e.keyCode ? e.keyCode : e.which;
+            console.log(keyID);
+            if (keyID == 116) { // F5
+                // initCanvas();
+                // e.preventDefault();
+            } else if (keyID == 123) { // F12
+                // prompt('請輸入主控台密碼(誤)：')
+            } else if (keyID == 90 && e.ctrlKey) { // Ctrl + Z
+                undo();
+                e.preventDefault();
+            } else if (keyID == 89 && e.ctrlKey) { // Ctrl + Y
+                redo();
+                e.preventDefault();
+            } else if (e.ctrlKey) {
+                canvasEraser = ! canvasEraser;
+                console.log(canvasEraser ? "啟用擦子" : "停用擦子");
+            }
+            else if(keyID==83){
+                canvassquare=!canvassquare;
+                console.log(canvassquare ? "畫矩形" : "其他圖形");
+            }
+            else if(keyID==67){
+                canvascircle=!canvascircle;
+                console.log(canvascircle ? "畫圓形" : "其他圖形");
+            } else { 
+                e.preventDefault(); 
+            }
+        }
+>>>>>>> origin/merge
         </script>
     </body>
 </html>
