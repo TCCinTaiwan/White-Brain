@@ -1,12 +1,27 @@
-<!DOCTYPE html>
-<html>
-	<head>
-		<title>白板Write's Brain</title>
+<!DOCTYPE html >
+<html lang="zh-TW">
+    <head>
+        <meta name="application-name" content="Write's Brain" />
+        <meta name="author" content="TCC" />
+        <meta name="description" content="OnlineWhiteboard" />
+        <meta name="keywords" content="JavaScript, Canvas, Whiteboard, Online" />
+        <meta name="revised" content="2016-02-21" />
+        <!-- Mobile-friendly viewport -->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <meta http-equiv="content-language" content="zh-tw">
+        <meta http-equiv="default-style" content="Main Style">
+        <!-- <meta http-equiv="refresh "content="1; url=http://203.64.91.82"> -->
+        <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+        <title>Write's Brain</title>
 		<link rel='icon' type='image/png' href="{{ url_for('static', filename='favicon.png') }}">
 	</head>
 	<body>
 		Hi, welcome to Write's Brain!!
+        <br/><a href='/b'>Go to 隨機房間!!</a>
 		<br/><a href='/b/test'>Go to 測試版!!</a>
-		<br/><a href='/b/test_view'>Go to 測試版[唯讀]!!</a>
+        <br/><a href='/b_status/test'>Go to 測試版JSON資訊!!</a>
+		<br/><a href='/b_view/test'>Go to 測試版[唯讀]!!</a>
 	</body>
 </html>

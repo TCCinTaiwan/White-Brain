@@ -1,9 +1,172 @@
-<!DOCTYPE html>
-<html>
-
+<!DOCTYPE html >
+<html lang="zh-TW">
     <head>
-        <title>白板Write's Brain</title>
+        <meta charset="UTF-8">
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <meta http-equiv="content-language" content="zh-tw">
+        <meta http-equiv="default-style" content="Main Style">
+        <!-- <meta http-equiv="refresh "content="1; url=http://203.64.91.82"> -->
+        <meta http-equiv="X-UA-Compatible"content="IE=edge,chrome=1">
+
+        <meta name="application-name" content="Write's Brain" />
+        <meta name="author" content="TCC" />
+        <meta name="description" content="OnlineWhiteboard" />
+        <meta name="keywords" content="JavaScript, Canvas, Whiteboard, Online" />
+        <meta name="revised" content="2016-02-21" />
+        <!-- Mobile-friendly viewport -->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+        <title>Write's Brain</title>
+
         <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
+<<<<<<< HEAD
+
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" title="Main Style">
+        <link rel="alternate stylesheet" href="{{ url_for('static', filename='css/main.css') }}" title="Main Style">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.min.css') }}">
+        <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css"> -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+        <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css"> -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-theme.min.css') }}">
+        <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css"> -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-colorpicker.min.css') }}">
+        <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-colorpicker/2.3.0/css/bootstrap-colorpicker.min.css"> -->
+
+        <!--[if lt IE 9]>
+            <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+        <script src="{{ url_for('static', filename='js/jquery-2.2.0.js') }}"></script>
+        <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script> -->
+        <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+        <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script> -->
+        <script src="{{ url_for('static', filename='js/bootstrap-colorpicker.min.js') }}"></script>
+        <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-colorpicker/2.3.0/js/bootstrap-colorpicker.min.js"></script> -->
+        <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    </head>
+    <body background="{{ url_for('static', filename='img/blackboard.jpg') }}" onSelectStart="event.returnValue=false">
+        <div class="box">
+            <img id="map" alt="" />
+        </div><!-- 小地圖 -->
+        <canvas id="canvas">你的瀏覽器不支援Canvas。</canvas>
+        <!-- <canvas id="canvas2">你的瀏覽器不支援Canvas。</canvas> -->
+        <div id="contextMenu">
+            <div id="changemode" class=""><i class="fa fa-mouse-pointer"></i><!-- 模式: 正常 --></div>
+            <div id="changeshape" class=""><i class="fa fa-pencil"></i><!-- 形狀: 畫筆 --></div>
+            <div id="changewidth">寬度</div>
+            <div id="changestrokestyle" class="input-group">
+                <span class="input-group-addon" style="display: inline;padding: 0 0;"><i style="width: 56px;"></i></span>
+            </div>
+            <div id="changefillstyle" class="input-group">
+                <span class="input-group-addon" style="display: inline;padding: 0 0;"><i style="width: 56px;"></i></span>
+            </div>
+            <div id="clearcanvas">清空</div>
+            <div id="changeroom">更換房間</div>
+        </div>
+        <div id="preview"></div>
+        <script>
+            $(function(){
+                colorpickeroptions = {
+                    horizontal: false, // horizontal mode layout ?
+                    inline: false, // forces to show the colorpicker as an inline element
+                    color: "#FF0000", // forces a color
+                    format: 'rgba', // forces a format
+                    input: 'input', // children input selector
+                    container: false, // container selector
+                    component: '.add-on, .input-group-addon', // children component selector
+                    sliders: {
+                        saturation: {
+                            maxLeft: 100,
+                            maxTop: 100,
+                            callLeft: 'setSaturation',
+                            callTop: 'setBrightness'
+                        },
+                        hue: {
+                            maxLeft: 0,
+                            maxTop: 100,
+                            callLeft: false,
+                            callTop: 'setHue'
+                        },
+                        alpha: {
+                            maxLeft: 0,
+                            maxTop: 100,
+                            callLeft: false,
+                            callTop: 'setAlpha'
+                        }
+                    },
+                    slidersHorz: {
+                        saturation: {
+                            maxLeft: 100,
+                            maxTop: 100,
+                            callLeft: 'setSaturation',
+                            callTop: 'setBrightness'
+                        },
+                        hue: {
+                            maxLeft: 1000,
+                            maxTop: 0,
+                            callLeft: 'setHue',
+                            callTop: false
+                        },
+                        alpha: {
+                            maxLeft: 100,
+                            maxTop: 0,
+                            callLeft: 'setAlpha',
+                            callTop: false
+                        }
+                    },
+                    template: '<div class="colorpicker dropdown-menu"><div class="colorpicker-saturation"><i><b></b></i></div><div class="colorpicker-hue"><i></i></div><div class="colorpicker-alpha"><i></i></div><div class="colorpicker-color"><div /></div><div class="colorpicker-selectors"></div></div>',
+                    align: 'right',
+                    customClass: null,
+                    colorSelectors: {
+                        red: "#FF0000",
+                        orange: "#FFA500",
+                        yellow: "#FFFF00",
+                        green: "#008000",
+                        cyan: "#00FFFF",
+                        blue: "#0000FF",
+                        indigo: "#4B0082",
+                        purple: "#800880",
+                        black: "#000000",
+                        white: "#FFFFFF",
+                        gray: "#D3D3D3"
+                    }
+                };
+
+
+                $('#changefillstyle').colorpicker(
+                    colorpickeroptions
+                ).on('changeColor', function changeFillStyleHander(e) {
+                    context.fillStyle = e.color.toHex();
+                    // context.globalAlpha = e.color.a;
+                    preview.style.backgroundColor = e.color.toRGB();
+                });
+                $('#changestrokestyle').colorpicker(
+                    colorpickeroptions
+                ).on('changeColor', function changeStrokeStyleHander(e) {
+                    context.strokeStyle = e.color.toHex();
+                    context.globalAlpha = e.color.a;
+                    preview.style.strokeStyle = e.color.toRGB();
+                    // console.log(e.color.toRGB(), e.color.toHex(), e.color.toHSL());
+                });
+
+                uid = {{ user_id }};
+                resize();
+                initCanvas();
+                changeShape();
+                changeMode();
+                context.strokeStyle = $('#changestrokestyle').data('colorpicker').color;
+                context.fillStyle = $('#changefillstyle').data('colorpicker').color;
+                context.lineWidth = 5;
+                preview.style.borderTopWidth = context.lineWidth + "px";
+                preview.style.borderRadius = context.lineWidth+ "px";
+                context.lineJoin = 'round'; //bevel: 斜角, miter: 尖角
+                context.lineCap = 'round'; //butt: 平直, square: 正方形
+                $("#changeroom")[0].onmousedown = changeRoom;
+                $("#changeshape")[0].onmousedown = changeShape;
+                $("#changemode")[0].onmousedown = changeMode;
+                $("#clearcanvas")[0].onmousedown = clearCanvas;
+                $("#changewidth")[0].onmousedown = changeWidth;
+            });
+=======
         <style type="text/css">
         html,
         body {
@@ -431,7 +594,7 @@
                 e.preventDefault(); 
             }
         }
+>>>>>>> origin/merge
         </script>
     </body>
-
 </html>

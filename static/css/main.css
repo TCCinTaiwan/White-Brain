@@ -1,0 +1,74 @@
+html,
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    background-repeat: no-repeat;
+    /*background: black;*/
+}
+/* 主畫布 */
+#canvas {
+    position: fixed;
+    cursor: url(/img/pencil-cursor.png) 0 0,pointer; /* 保持鼠標url(/img/pencil.png) */
+    background: transparent; /* 背景透明 */
+}
+#canvas:active {/* 交給javascript */
+    cursor: url(/img/pencil-cursor.png) 0 0,crosshair; /* 保持鼠標 */
+}
+/* 預覽線 */
+#preview {
+    display: none;
+    width: 0px; /* 在這裡width代表線的長度 */
+    cursor: pointer; /* 保持鼠標 */
+    border-top-width: 1px;
+    border-top-style: solid;
+    border-top-color: red;
+    /*border-bottom-width: 1px;
+    border-bottom-style: dashed;
+    border-bottom-color: blue;*/
+    position: fixed;
+    transform-origin: left;
+    z-index: 100; /* 保持在上層，理論上這個數字要比選單小，比畫布大 */
+}
+#prview.line {
+
+}
+#contextMenu {
+    size: 50px 100px;
+    background: white;
+    z-index: 200; /* 大於畫布 */
+    position: fixed;
+    display: none;
+}
+#contextMenu > div {
+    background: white;
+    padding: 2px 10px;
+    border-width: 1px;
+    border-color: grey;
+    border-style: solid;
+}
+#contextMenu > div:hover {
+    background-color: grey;
+}
+#changeshape {
+    /**/
+}
+#changeshape {
+    /**/
+}
+/*圖片自動縮放*/
+.box #map{
+    background: white;
+    border: solid 1px;
+    border-radius: 5px;
+    z-index: 300; /* 大於選單 */
+    position: fixed;
+    right: 0;
+    top: 0;
+    max-width: 30%;
+    max-height: 30%;
+    width: 200px;
+    height: 200px;
+}
