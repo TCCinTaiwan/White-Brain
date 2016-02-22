@@ -11,11 +11,11 @@ body {
 /* 主畫布 */
 #canvas {
     position: fixed;
-    cursor: pointer; /* 保持鼠標url(/img/pencil.png) */
+    cursor: url(/img/pencil-cursor.png) 0 0,pointer; /* 保持鼠標url(/img/pencil.png) */
     background: transparent; /* 背景透明 */
 }
 #canvas:active {/* 交給javascript */
-    cursor: crosshair; /* 保持鼠標 */
+    cursor: url(/img/pencil-cursor.png) 0 0,crosshair; /* 保持鼠標 */
 }
 /* 預覽線 */
 #preview {
