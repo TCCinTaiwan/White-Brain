@@ -42,7 +42,7 @@
         <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-colorpicker/2.3.0/js/bootstrap-colorpicker.min.js"></script> -->
         <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     </head>
-    <body background="{{ url_for('static', filename='img/blackboard.jpg') }}">
+    <body background="{{ url_for('static', filename='img/blackboard.jpg') }}" onSelectStart="event.returnValue=false">
         <div class="box">
             <img id="map" alt="" />
         </div><!-- 小地圖 -->
@@ -129,6 +129,8 @@
                         gray: "#D3D3D3"
                     }
                 };
+
+
                 $('#changefillstyle').colorpicker(
                     colorpickeroptions
                 ).on('changeColor', function changeFillStyleHander(e) {
@@ -141,41 +143,27 @@
                 ).on('changeColor', function changeStrokeStyleHander(e) {
                     context.strokeStyle = e.color.toHex();
                     context.globalAlpha = e.color.a;
-                    preview.style.borderColor = e.color.toRGB();
+                    preview.style.strokeStyle = e.color.toRGB();
                     // console.log(e.color.toRGB(), e.color.toHex(), e.color.toHSL());
                 });
+
                 uid = {{ user_id }};
                 resize();
                 initCanvas();
-                $("#changeroom")[0].onmousedown = function changeRoom() {
-                    rid = prompt('房間ID:');
-                    if (rid != null){
-                        location.pathname = "/b/" + rid;
-                        localStorage.setItem("Write's Brain", JSON.stringify({rid: rid, uid: uid}));
-                    }
-                }
-                $("#changeshape")[0].onmousedown = function changeShape() {
-                    shapeList = [
-                        "畫筆",
-                        "直線",
-                        "圓",
-                        "多邊形",
-                        "矩形",
-                        "橡皮擦"
-                    ];
-                    shape = (shape + 1) % shapeList.length; //形狀(0~5)
-                    changeshape.textContent = "形狀:" + shapeList[shape];
-                }
-                $("#changemode")[0].onmousedown = function changeMode() {
-                    modeList = [
-                        "正常",
-                        "移動"
-                    ];
-                    mode = (mode + 1) % modeList.length; //模式(0~2)
-                    changemode.textContent = "模式:" + modeList[mode];
-                }
-                $("#clearcanvas").onmousedown = clearCanvas;
-                $("#changewidth").onmousedown = changeWidth;
+                changeShape();
+                changeMode();
+                context.strokeStyle = $('#changestrokestyle').data('colorpicker').color;
+                context.fillStyle = $('#changefillstyle').data('colorpicker').color;
+                context.lineWidth = 5;
+                preview.style.borderTopWidth = context.lineWidth + "px";
+                preview.style.borderRadius = context.lineWidth+ "px";
+                context.lineJoin = 'round'; //bevel: 斜角, miter: 尖角
+                context.lineCap = 'round'; //butt: 平直, square: 正方形
+                $("#changeroom")[0].onmousedown = changeRoom;
+                $("#changeshape")[0].onmousedown = changeShape;
+                $("#changemode")[0].onmousedown = changeMode;
+                $("#clearcanvas")[0].onmousedown = clearCanvas;
+                $("#changewidth")[0].onmousedown = changeWidth;
             });
         </script>
     </body>

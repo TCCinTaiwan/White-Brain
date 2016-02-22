@@ -11,7 +11,7 @@ body {
 /* 主畫布 */
 #canvas {
     position: fixed;
-    cursor: pointer; /* 保持鼠標 */
+    cursor: pointer; /* 保持鼠標url(/img/pencil.png) */
     background: transparent; /* 背景透明 */
 }
 #canvas:active {/* 交給javascript */
