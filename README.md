@@ -1,17 +1,24 @@
-# [White-Brain](http://203.64.91.82/)
-
+# [:octocat:White-Brain](http://203.64.91.82/)
+TCCinTaiwan/White-Brain
+=============
 ## Browser Support
 ![IE](https://raw.github.com/alrra/browser-logos/master/internet-explorer/internet-explorer_48x48.png) | ![Chrome](https://raw.github.com/alrra/browser-logos/master/chrome/chrome_48x48.png) | ![Firefox](https://raw.github.com/alrra/browser-logos/master/firefox/firefox_48x48.png) | ![Opera](https://raw.github.com/alrra/browser-logos/master/opera/opera_48x48.png) | ![Safari](https://raw.github.com/alrra/browser-logos/master/safari/safari_48x48.png)
 --- | --- | --- | --- | --- |
-IE 10+ ✔ | Chrome 4.0+ ✔ | Firefox 16.0+ ✔ | Opera 15.0+ ✔ | Safari 4.0+ ✔ |
+IE 10+ ✖ | Chrome 4.0+ ✔ | Firefox 16.0+ ✔ | Opera 15.0+ ✔ | Safari 4.0+ ✔ |
 
 ## Demo
-[![css-loaders-screenshot](https://raw.githubusercontent.com/lukehaas/css-loaders/step2/images/css-loaders-screenshot.jpg)](http://projects.lukehaas.me/css-loaders)
+[![screenshot](screenshot.png)](http://203.64.91.82/)
 > [Check it live](http://203.64.91.82/).
+>> [Check it live](http://203.64.91.82/).
+>>> [Check it live](http://203.64.91.82/).
 
-小白板
-    預計功能：
-        工具
+```js
+console.log('test')
+```
+----
+* 小白板
+    * 預計功能：
+        1. 工具
             選取框
             拖曳
             擦子
@@ -33,26 +40,24 @@ IE 10+ ✔ | Chrome 4.0+ ✔ | Firefox 16.0+ ✔ | Opera 15.0+ ✔ | Safari 4.0+
             連線共用
             快捷鍵
             寫文字
-        物件
+        2. 物件
             圖片
-        選項
+        3. 選項
             格線
-                開啟關閉 Ctrl + G
+                開啟關閉 <kbd>Ctrl</kbd> + <kbd>G</kbd>
             畫圖步驟物件化
             旋轉
-                特殊角 Ctrl
-        上一步
-            Ctri + Z
+                特殊角 <kbd>Ctrl</kbd>
+        4. 上一步
+            <kbd>Ctrl</kbd>+<kbd>Z</kbd>
             微調
-        下一步
-            Ctrl + Y
+        5. 下一步
+            <kbd>Ctrl</kbd> + <kbd>Y</kbd>
             微調
-        Shift
-        SHift 正圓
-        Shift 正方形
-        小地圖
+            <kbd>Shift</kbd> 正圓
+            <kbd>Shift</kbd> 正方形
+        6. 小地圖
 ## Contributing
-
 1. Fork it!
 2. Create your feature branch: `git checkout -b my-new-feature`
 3. Commit your changes: `git commit -m 'Add some feature'`
@@ -61,8 +66,7 @@ IE 10+ ✔ | Chrome 4.0+ ✔ | Firefox 16.0+ ✔ | Opera 15.0+ ✔ | Safari 4.0+
 
 ## History
 
-For detailed changelog, check [Releases](https://github.com/lukehaas/css-loaders/releases).
+For detailed changelog, check [Releases](https://github.com/TCCinTaiwan/White-Brain/releases).
 
 ## License
-
-[MIT License](https://github.com/lukehaas/css-loaders/blob/step2/LICENSE)
+[MIT License](https://github.com/TCCinTaiwan/White-Brain/LICENSE)
