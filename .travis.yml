@@ -1,8 +1,5 @@
 language: python
 
-services:
-  - Flask
-
 python:
   - 2.7.8
   - 2.7

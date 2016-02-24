@@ -22,7 +22,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [0.0.1] - 2016-02-20
 ### Added
-- Initial Upload(黑客松上傳)
+- First Upload(黑客松上傳)
 
 [0.0.2]: https://github.com/TCCinTaiwan/White-Brain/commit/51d2128b23599ee3def2ec5f25e59a4cb93a34ef
 [0.0.1]: https://github.com/TCCinTaiwan/White-Brain/commit/51d2128b23599ee3def2ec5f25e59a4cb93a34ef
