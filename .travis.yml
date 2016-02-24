@@ -14,7 +14,7 @@ install:
   - pip install --upgrade pip #[他預先的 pip 版本不是最新的，所以先更新一下]
   - pip install Flask #[這幾行都是在裝你需要的環境＆工具]
 
-sudo: false
+sudo: true
 
 matrix:
     fast_finish: true
