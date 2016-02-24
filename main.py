@@ -15,6 +15,9 @@ app.debug = True
 #     return send_from_directory(app.config['UPLOAD_FOLDER'], filename, as_attachment=True)
 room_status = {"0" : {"0" : ""}} # 2016-02-20 18:33.00
 def main():
+    print("    'White's Brain'  Copyright (C) 2016  TCC")
+    print("    This program comes with ABSOLUTELY NO WARRANTY.")
+    print("    This is free software, and you are welcome to redistribute itunder certain conditions.")
     app.run(host = "0.0.0.0", port = 80)
 @app.route('/')
 def index():

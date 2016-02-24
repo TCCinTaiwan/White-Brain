@@ -1,0 +1,1 @@
+本著作以創用CC 姓名標示-相同方式分享 4.0 國際 授權條款釋出。詳細授權條款，請至http://creativecommons.org/licenses/by-sa/4.0/ 。

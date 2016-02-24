@@ -1,0 +1,31 @@
+language: python
+
+php:
+  - "3.5"
+
+env:
+  - REQUIREMENTS=lowest
+  - REQUIREMENTS=release
+  - REQUIREMENTS=devel
+
+matrix:
+  exclude:
+    # Python 3 support currently does not work with lowest requirements
+    - python: "3.5"
+      env: REQUIREMENTS=lowest
+install:
+  - pip install Flask
+
+script:
+    - tox -e py-$REQUIREMENTS
+
+branches:
+  except:
+    - website
+
+notifications:
+  email:
+    recipients:
+      - john987john987@gmail.com
+    on_success: always
+    on_failure: always

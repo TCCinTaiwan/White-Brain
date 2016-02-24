@@ -73,10 +73,10 @@ function FireFoxEvent(e) {
         e.path = [];
         var obj = e.target;
         while (obj != null) {
-            e.path.push(obj);
+            e.path[e.path.lenght] = obj;
             obj = obj.parentNode;
         }
-        e.path.push(window);
+        e.path[e.path.lenght] = window;
     }
     e.offsetX = (e.offsetX == undefined) ? e.layerX : e.offsetX;
     e.offsetY = (e.offsetY == undefined) ? e.layerY : e.offsetY;
