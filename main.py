@@ -18,7 +18,7 @@ def main():
     print("    'White's Brain'  Copyright (C) 2016  TCC")
     print("    This program comes with ABSOLUTELY NO WARRANTY.")
     print("    This is free software, and you are welcome to redistribute itunder certain conditions.")
-    app.run(host = os.getenv('IP', "0.0.0.0"), port = os.getenv('PORT', 80))
+    app.run(host = os.getenv('IP', "0.0.0.0"), port = int(os.getenv('PORT', 80)))
 @app.route('/')
 def index():
     return render_template('index.htm')
