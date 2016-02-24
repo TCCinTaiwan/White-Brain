@@ -1,27 +1,29 @@
 language: python
 
-php:
-  - "3.5"
+services:
+  - Flask
 
-env:
-  - REQUIREMENTS=lowest
-  - REQUIREMENTS=release
-  - REQUIREMENTS=devel
+python:
+  - 2.7.8
+  - 2.7
+  - pypy
+  - 3.3
+  - 3.4
+  - 3.5
+  - nightly
+  - pypy3
+
+install:
+  - pip install --upgrade pip #[他預先的 pip 版本不是最新的，所以先更新一下]
+  - npm install -g Flask      #[這幾行都是在裝你需要的環境＆工具]
+
+sudo: false
 
 matrix:
-  exclude:
-    # Python 3 support currently does not work with lowest requirements
-    - python: "3.5"
-      env: REQUIREMENTS=lowest
-install:
-  - pip install Flask
+    fast_finish: true
 
 script:
-    - tox -e py-$REQUIREMENTS
-
-branches:
-  except:
-    - website
+    - python ./main.py
 
 notifications:
   email:
