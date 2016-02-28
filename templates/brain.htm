@@ -42,7 +42,46 @@
         <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-colorpicker/2.3.0/js/bootstrap-colorpicker.min.js"></script> -->
         <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     </head>
-    <body background="{{ url_for('static', filename='img/blackboard.jpg') }}" onSelectStart="event.returnValue=false">
+    <body background="{{ url_for('static', filename='img/grid100_x.png') }}" onSelectStart="event.returnValue=false">
+        <div id="loader">
+            <div class="container">
+                <div class="gearbox">
+                    <div class="overlay"></div>
+                    <div class="gear one">
+                        <div class="gear-inner">
+                            <div class="bar"></div>
+                            <div class="bar"></div>
+                            <div class="bar"></div>
+                        </div>
+                    </div>
+                    <div class="gear two">
+                        <div class="gear-inner">
+                            <div class="bar"></div>
+                            <div class="bar"></div>
+                            <div class="bar"></div>
+                        </div>
+                    </div>
+                    <div class="gear three">
+                        <div class="gear-inner">
+                            <div class="bar"></div>
+                            <div class="bar"></div>
+                            <div class="bar"></div>
+                        </div>
+                    </div>
+                    <div class="gear four large">
+                        <div class="gear-inner">
+                            <div class="bar"></div>
+                            <div class="bar"></div>
+                            <div class="bar"></div>
+                            <div class="bar"></div>
+                            <div class="bar"></div>
+                            <div class="bar"></div>
+                        </div>
+                    </div>
+                </div>
+                <h1>Loading...</h1>
+            </div>
+        </div>
         <div class="box">
             <img id="map" alt="" />
         </div><!-- 小地圖 -->
@@ -58,11 +97,10 @@
             <div id="changefillstyle" class="input-group">
                 <span class="input-group-addon" style="display: inline;padding: 0 0;"><i style="width: 56px;"></i></span>
             </div>
-            <div id="clearcanvas">清空</div>
+            <div id="clear">清空</div>
             <div id="changeroom">更換房間</div>
         </div>
         <div id="preview"></div>
-        <div class="loader">Loading...</div>
         <script>
             $(function(){
                 colorpickeroptions = {
@@ -163,8 +201,10 @@
                 $("#changeroom")[0].onmousedown = changeRoom;
                 $("#changeshape")[0].onmousedown = changeShape;
                 $("#changemode")[0].onmousedown = changeMode;
-                $("#clearcanvas")[0].onmousedown = clearCanvas;
+                $("#clear")[0].onmousedown = clear;
                 $("#changewidth")[0].onmousedown = changeWidth;
+                console.log("載入完成1");
+                $("#loader")[0].className = "hide"
             });
         </script>
     </body>

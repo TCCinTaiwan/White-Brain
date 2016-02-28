@@ -1,5 +1,7 @@
 # [:octocat:White's Brain](https://github.com/TCCinTaiwan/White-Brain)
-[![Build Status](https://travis-ci.org/TCCinTaiwan/White-Brain.svg?branch=master)](https://travis-ci.org/TCCinTaiwan/White-Brain)
+[![Build Status](https://travis-ci.org/TCCinTaiwan/White-Brain.svg?branch=TCC)](https://travis-ci.org/TCCinTaiwan/White-Brain)
+
+
 
 ## Table of Contents [↶]()
 * **[Introduction](#introduction)**
@@ -7,8 +9,7 @@
 * **[Browser Support](#browser-support)**
 * **[Installation](#installation)**
 * **[Usage](#usage)**
-* **[Features](#features)**
-* **[預計功能](#_1)**
+* **[Todo](#todo)**
 * **[Contributing](#contributing)**
 * **[History](#history)**
 * **[License](#license)**
@@ -16,14 +17,18 @@
 ## Introduction [↶]()
 　　之前有一次在和同學解釋河內塔時，我使用了一個線上電子白板，但是操作起來覺得不夠直覺化，因此漸漸萌生自己做一個的念頭，這個專案也就在 KUAS ITC 的第一屆Hackathon開始執行了。
 
+| ![Python](https://www.python.org/static/favicon.ico) | ![Flask](http://t.douban.com/icon/g241979-3.jpg) | ![HTML5](http://manongs.com/static/article/2015/1126/html5.png) | ![CSS3](https://pbs.twimg.com/profile_images/378800000696557796/5a1a52b93e06a59b0dcafa09ceda1319_normal.jpeg) | ![JavaScript](https://pbs.twimg.com/profile_images/628340016322752512/d5GfSIpx_normal.png) | ![Bootstrap](https://pbs.twimg.com/profile_images/378800000195279414/f8404a9d719c7ffce1478ba1a50036f9_normal.png) | ![jQuery](https://pbs.twimg.com/profile_images/59268975/jquery_avatar_normal.png) | ![Font Awesome](http://a.thumbs.redditmedia.com/Xe2tefgxqMLgR4cf.jpg) |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| Python | Flask | HTML5 | CSS3 | JavaScript | Bootstrap | jQuery | Font Awesome |
+
 ## Demo [↶]()
 [![執行畫面](screenshot.png "screenshot")](http://203.64.91.82/)
 > [Check it live](http://203.64.91.82/).
 
 ## Browser Support [↶]()
-![IE](https://raw.github.com/alrra/browser-logos/master/internet-explorer/internet-explorer_48x48.png) | ![Chrome](https://raw.github.com/alrra/browser-logos/master/chrome/chrome_48x48.png) | ![Firefox](https://raw.github.com/alrra/browser-logos/master/firefox/firefox_48x48.png) | ![Opera](https://raw.github.com/alrra/browser-logos/master/opera/opera_48x48.png) | ![Safari](https://raw.github.com/alrra/browser-logos/master/safari/safari_48x48.png)
---- | --- | --- | --- | --- |
-IE 10+ ✖ | Chrome 4.0+ ✔ | Firefox 16.0+ ✖ | Opera 15.0+ ✖ | Safari 4.0+ ✖ |
+| ![IE](https://raw.github.com/alrra/browser-logos/master/internet-explorer/internet-explorer_48x48.png) | ![Chrome](https://raw.github.com/alrra/browser-logos/master/chrome/chrome_48x48.png) | ![Firefox](https://raw.github.com/alrra/browser-logos/master/firefox/firefox_48x48.png) | ![Opera](https://raw.github.com/alrra/browser-logos/master/opera/opera_48x48.png) | ![Safari](https://raw.github.com/alrra/browser-logos/master/safari/safari_48x48.png) |
+| --- | --- | --- | --- | --- |
+| IE 10+ ✖ | Chrome 4.0+ ✔ | Firefox 16.0+ ✖ | Opera 15.0+ ✖ | Safari 4.0+ ✖ |
 
 ## Installation [↶]()
 ```bash
@@ -41,45 +46,54 @@ cd White-Brain
 python main.py
 ```
 
-## Features [↶]()
-
-## 預計功能 [↶]()
+## Todo [↶]()
 1. 工具
-    - 選取框
-    - 拖曳
-    - 擦子
-        - 物件擦
-        - 區域擦
-    - 畫線
-        - 點 按一下
-        - 線 隨意畫
-        + 中心點模式 <kbd>Ctrl</kbd>
-        + 曲線 <kbd>Alt</kbd>
-        + 直線 <kbd>Shift</kbd>
-    - 畫矩形/多邊形
-        + 矩形
-        + 設定邊數
-        + 正多邊形 <kbd>Shift</kbd>
-        + 中心點模式 <kbd>Ctrl</kbd>
-    - 畫圓形
-        + 正圓 <kbd>Shift</kbd>
+    - [ ] 選取框
+    - [ ] 擦子
+        + [ ] 物件擦
+        + [ ] 區域擦
+    - [ ] 畫線
+        + [ ] 點 按一下
+        + [X] 鉛筆
+        + [X] 直線
+        + [ ] 中心點模式
+            * [ ] <kbd>Ctrl</kbd>
+        + [ ] 曲線
+            * [ ] <kbd>Alt</kbd>
+            * [ ] <kbd>Shift</kbd>
+    - [ ] 畫矩形/多邊形
+        + [X] 矩形
+        + [ ] 設定邊數
+        + [ ] 正多邊形
+            * [ ] <kbd>Shift</kbd>
+        + [ ] 中心點模式
+            * [ ] <kbd>Ctrl</kbd>
+    - [ ] 畫圓形
+        + [X] 正圓
+            * [ ] <kbd>Shift</kbd>
+        + [ ] 橢圓形
 2. 物件
-    - 文字
-    - 圖片
+    - [ ] 文字
+    - [ ] 圖片
 3. 選項
-    - 格線
-        - 開啟關閉 <kbd>Ctrl</kbd> + <kbd>G</kbd>
-    - 畫圖步驟物件化
-    - 旋轉
-        - 特殊角 <kbd>Ctrl</kbd>
-4. 上一步
-    - <kbd>Ctrl</kbd>+<kbd>Z</kbd>
-    - 微調
-5. 下一步
-    - <kbd>Ctrl</kbd> + <kbd>Y</kbd>
-    - 微調
-6. 小地圖
-7. 連線共用
+    - [ ] 格線
+        + [ ] 開啟關閉
+            * [ ] <kbd>Ctrl</kbd> + <kbd>G</kbd>
+    - [ ] 畫圖步驟物件化
+    - [ ] 旋轉
+        + [ ] 特殊角
+            * [ ] <kbd>Ctrl</kbd>
+4. 步驟
+    - [ ] 上一步
+        + [ ] <kbd>Ctrl</kbd>+<kbd>Z</kbd>
+        + [ ] 微調
+    - [ ] 下一步
+        + [ ] <kbd>Ctrl</kbd> + <kbd>Y</kbd>
+        + [ ] 微調
+5. 小地圖
+    - [ ] 預覽
+6. 連線共用
+7. 拖曳
 
 ## Contributing [↶]()
 1. Create an issue and describe your idea

@@ -1,26 +1,37 @@
 language: python
 
+sudo: true
+
+env:
+  - FLASK=0.10.1
+  - FLASK=0.9
+  - FLASK=0.8.1
+  - FLASK=0.7.2
+
+services:
+  - redis
+
 python:
-  - 2.7.8
-  - 2.7
-  - pypy
-  - 3.3
-  - 3.4
-  - 3.5
-  - nightly
-  - pypy3
+  # - "2.6"
+  # - "2.7"
+  # - "3.2"
+  # - "3.3"
+  # - "3.4"
+  - "3.5"
+  # - "3.5-dev" # 3.5 development branch
+  # - "nightly" # currently points to 3.6-dev
 
 install:
   - pip install --upgrade pip #[他預先的 pip 版本不是最新的，所以先更新一下]
-  - pip install Flask #[這幾行都是在裝你需要的環境＆工具]
-
-sudo: true
+  - pip install -q Flask==$FLASK
+  - pip install -q -r dev_requirements.txt
+  - pip install -q -e .
 
 matrix:
     fast_finish: true
 
 script:
-    - python ./main.py
+    - python main.py test
 
 notifications:
   email:

@@ -6,20 +6,15 @@ import os
 import sys
 import re
 from datetime import datetime
-# ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 app = Flask(__name__, static_url_path = "", static_folder = "static")
 app.debug = True
-# app.config['UPLOAD_FOLDER'] = os.getcwd() + "/room/"
-# @app.route('/room/<path:filename>') # png檔
-# def uploaded_file(filename):
-#     return send_from_directory(app.config['UPLOAD_FOLDER'], filename, as_attachment=True)
-room_status = {"0" : {"0" : ""}} # 2016-02-20 18:33.00
+room_status = {"0" : {"0" : ""}} # yyyy-MM-dd HH:mm:ss
 def main():
-    print("    'White's Brain'  Copyright (C) 2016  TCC")
+    print("    'White's Brain' Copyright (C) 2016  TCC")
     print("    This program comes with ABSOLUTELY NO WARRANTY.")
     print("    This is free software, and you are welcome to redistribute itunder certain conditions.")
-    app.run(host = "0.0.0.0", port = 80)
-@app.route('/')
+    app.run(host = os.getenv('IP', "0.0.0.0"), port = os.getenv('PORT', 80))
+@app.route('/') #首頁
 def index():
     return render_template('index.htm')
 @app.route('/b/')
@@ -47,7 +42,7 @@ def showBrain(room_id):
         user_id = random.randrange(0, 1)
         print("使用" + str(room_id) + "房間，ID:" + str(user_id), file = sys.stderr)
         return render_template('brain.htm', user_id = user_id)
-@app.route('/b_status/<room_id>', methods = ["POST", "GET"]) # readonly
+@app.route('/b_status/<room_id>', methods = ["POST", "GET"]) # 房間狀態
 def showBrainStatus(room_id):
     if request.method == "POST":
         user_id = request.form['uid'] # 人數, 更新時間
@@ -62,7 +57,7 @@ def showBrainStatus(room_id):
         else:
             print(room_id + "房(使用者)，要求", room_status[room_id], file = sys.stderr)
             return jsonify({room_id : room_status[room_id]})
-@app.route('/b_view/<room_id>') # readonly
+@app.route('/b_view/<room_id>') # 觀察者模式
 def showReadOnlyTestBrain(room_id):
     return render_template('brainReadOnly.htm')
 if __name__ == '__main__':

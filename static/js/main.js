@@ -16,11 +16,15 @@ function initCanvas() {
     context = canvas.getContext('2d');
     clearCanvas();
     var img = new Image();
+    map.onerror = function() { // No Image(404)
+        this.hide();
+    };
     map.onload = function imgLoadHander() {
         context.drawImage(map, 0, 0); // Or at whatever offset you like
     };
     img.src = '/room/' + rid + '_' + uid + '.png?' + new Date().getTime();
     map.src = img.src;
+    console.log("初始化畫布");
 }
 window.onresize = function ResizeHander() {
     resize();
@@ -33,10 +37,10 @@ function resize() { //保持畫布為視窗大小
         canvas.height = window.innerHeight;
     }
 }
+// var target = e.toElement || e.relatedTarget || e.target || function () { throw "Failed to attach an event target!"; }
 //  首先來獲取觸發onMouseOut事件的元素，IE下通過event的toElement屬性來獲得，firefox下通過event的relatedTarget屬性來獲得。
 // IE：event.toElement ，Firefox：event.relatedTarget（注意：Firefox下的event須通過在函數調用時傳入，而IE下的event則可以直接通過window.event系統對象來獲得)
 //  ①　接下來就是判斷獲取的元素是否是主體div的子元素（IE下可以通過元素的obj.contains(element)方法來判斷，但Firefox下沒有這個方法，所以需要給firefox定義元素的obj.contains()方法）。
-// 代碼如下：
 if(typeof(HTMLElement) != "undefined") { // 給firefox定義contains()方法，IE已經系統自帶有這個方法了
     HTMLElement.prototype.contains = function(obj) {
         while(obj != null && typeof(obj.tagName) != "undefind") { // 通過循環對比來判斷是不是obj的父元素
@@ -78,8 +82,8 @@ function FireFoxEvent(e) {
         }
         e.path[e.path.lenght] = window;
     }
-    e.offsetX = (e.offsetX == undefined) ? e.layerX : e.offsetX;
-    e.offsetY = (e.offsetY == undefined) ? e.layerY : e.offsetY;
+    // e.offsetX = (e.offsetX == undefined) ? e.layerX : e.offsetX;
+    // e.offsetY = (e.offsetY == undefined) ? e.layerY : e.offsetY;
     e.toElement = e.toElement || e.relatedTarget || e.target || function () { throw "Failed to attach an event target!"; }
     return e
 }
@@ -87,7 +91,6 @@ function FireFoxEvent(e) {
 document.onmousedown = function MouseDownHandler(e) {
     e = FireFoxEvent(e || window.event);
     console.log('滑鼠按下%O', e);
-    temp1 = e; //DDDDDDDDDDDDDDeBug
     leftbutton = e.button == 0;
     if (leftbutton) {
         if (contextMenu.style.display == "block" && (e.path.indexOf(contextMenu) > -1 && e.toElement.tagName != 'I' || e.toElement == canvas)) { // 選單取消
@@ -100,8 +103,8 @@ document.onmousedown = function MouseDownHandler(e) {
                 x: e.offsetX,
                 y: e.offsetY
             }
-            // cross(startpoint.x, startpoint.y, lineWidth);
             if (shape == 0) { //鉛筆
+                dot(startpoint.x, startpoint.y)
                 console.count("beginPath");
                 context.beginPath(); //
                 context.moveTo(startpoint.x, startpoint.y);
@@ -119,9 +122,13 @@ document.onmousedown = function MouseDownHandler(e) {
 document.onmousemove = function MouseMoveHandler(e) {
     e = FireFoxEvent(e || window.event);
     if (leftbutton) {
-        if (shape == 0) {
+        if (shape == 0) { //需多判斷是否畫對層
             var x = (e.offsetX == undefined) ? e.layerX : e.offsetX;
             var y = (e.offsetY == undefined) ? e.layerY : e.offsetY;
+            if (e.toElement != canvas) {
+                x += e.toElement.screenX
+                y += e.toElement.screenY
+            }
             context.lineTo(x, y);
             context.stroke(); //繪製路徑
         } else if (shape == 1) { //直線
@@ -232,9 +239,11 @@ function upload() {
             console.log('上傳錯誤:' + error);
         }
     });
+
 }
 // 畫十字(debug)
 function cross(x, y, size) {
+    size = size || context.lineWidth;
     console.count("beginPath");
     context.beginPath();
     context.lineWidth = 1;
@@ -246,6 +255,20 @@ function cross(x, y, size) {
     console.count("closePath");
     context.closePath();
     context.lineWidth = size;
+}
+function dot(x, y, size) {
+    size = size || context.lineWidth;
+    console.count("beginPath");
+    _color = context.fillStyle;
+    context.fillStyle = context.strokeStyle;
+    context.beginPath();
+    context.lineWidth = 1;
+    context.arc(x, y, size / 2, 0, Math.PI * 2);
+    context.fill();
+    console.count("closePath");
+    context.closePath();
+    context.lineWidth = size;
+    context.fillStyle = _color;
 }
 function changeWidth() {
     _lineWidth = Number(prompt('請輸入畫筆寬度：'));
@@ -286,6 +309,11 @@ function changeMode() {
 // 清空畫布
 function clearCanvas() {
     context.clearRect(0, 0, canvas.width, canvas.height);
+}
+// 清空
+function clear() {
+    clearCanvas();
+    canvaspush('清空');
 }
 // 加入步驟
 function canvaspush(summary) {
