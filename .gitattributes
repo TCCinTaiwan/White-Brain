@@ -23,7 +23,5 @@
 *.7z    binary
 *.ttf   binary
 
-*.py    diff=python
-*.md    diff=astextplain
 *.png   diff=exif
 *.jpg   diff=exif
