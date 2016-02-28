@@ -18,8 +18,6 @@ python:
 install:
   - pip install --upgrade pip #[他預先的 pip 版本不是最新的，所以先更新一下]
   - pip install -q Flask
-  - pip install -q -r dev_requirements.txt
-  - pip install -q -e .
 
 matrix:
     fast_finish: true
