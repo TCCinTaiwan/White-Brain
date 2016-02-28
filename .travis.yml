@@ -2,12 +2,6 @@ language: python
 
 sudo: true
 
-env:
-  - FLASK=0.10.1
-  - FLASK=0.9
-  - FLASK=0.8.1
-  - FLASK=0.7.2
-
 services:
   - redis
 
@@ -23,7 +17,7 @@ python:
 
 install:
   - pip install --upgrade pip #[他預先的 pip 版本不是最新的，所以先更新一下]
-  - pip install -q Flask==$FLASK
+  - pip install -q Flask
   - pip install -q -r dev_requirements.txt
   - pip install -q -e .
 
