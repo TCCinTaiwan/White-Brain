@@ -23,7 +23,7 @@ matrix:
     fast_finish: true
 
 script:
-    - python main.py test
+    - python test.py
 
 notifications:
   email:
