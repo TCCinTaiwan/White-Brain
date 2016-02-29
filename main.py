@@ -7,13 +7,14 @@ import sys
 import re
 from datetime import datetime
 app = Flask(__name__, static_url_path = "", static_folder = "static")
-app.debug = True
 room_status = {"0" : {"0" : ""}} # yyyy-MM-dd HH:mm:ss
 def main():
     print("    'White's Brain' Copyright (C) 2016  TCC")
     print("    This program comes with ABSOLUTELY NO WARRANTY.")
     print("    This is free software, and you are welcome to redistribute itunder certain conditions.")
-    app.run(host = os.getenv('IP', "0.0.0.0"), port = int(os.getenv('PORT', 80)))
+    app.run(host = os.getenv('IP', "0.0.0.0"), port = int(os.getenv('PORT', 80)), debug = True)
+    if (len(sys.argv) > 1 and sys.argv[1] == "test"):
+        sys.exit()
 @app.route('/') #首頁
 def index():
     return render_template('index.htm')
