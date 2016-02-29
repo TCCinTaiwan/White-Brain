@@ -12,9 +12,15 @@ def main():
     print("    'White's Brain' Copyright (C) 2016  TCC")
     print("    This program comes with ABSOLUTELY NO WARRANTY.")
     print("    This is free software, and you are welcome to redistribute itunder certain conditions.")
+    import logging
+    from logging.handlers import RotatingFileHandler
+    file_handler = RotatingFileHandler('main.log', 'a', 10 * 1024 * 1024, 10)
+    file_handler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'))
+    app.logger.setLevel(logging.INFO)
+    file_handler.setLevel(logging.INFO)
+    app.logger.addHandler(file_handler)
+    app.logger.info('Log startup')
     app.run(host = os.getenv('IP', "0.0.0.0"), port = int(os.getenv('PORT', 80)), debug = True)
-    if (len(sys.argv) > 1 and sys.argv[1] == "test"):
-        sys.exit()
 @app.route('/') #首頁
 def index():
     return render_template('index.htm')
