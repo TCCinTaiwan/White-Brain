@@ -1,5 +1,13 @@
 # [:octocat:White's Brain](https://github.com/TCCinTaiwan/White-Brain)
+<<<<<<< HEAD
 [![Gitter](https://badges.gitter.im/TCCinTaiwan/White-Brain.svg)](https://gitter.im/TCCinTaiwan/White-Brain?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) [![Build Status](https://travis-ci.org/TCCinTaiwan/White-Brain.svg?branch=TCC)](https://travis-ci.org/TCCinTaiwan/White-Brain)
+=======
+
+[![Join the chat at https://gitter.im/TCCinTaiwan/White-Brain](https://badges.gitter.im/TCCinTaiwan/White-Brain.svg)](https://gitter.im/TCCinTaiwan/White-Brain?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Build Status](https://travis-ci.org/TCCinTaiwan/White-Brain.svg?branch=TCC)](https://travis-ci.org/TCCinTaiwan/White-Brain)
+
+
+>>>>>>> origin/TCC
 
 ## Table of Contents [↶]()
 * **[Introduction](#introduction)**
