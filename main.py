@@ -8,6 +8,7 @@ import os
 import sys
 import re
 from datetime import datetime
+import platform
 app = Flask(__name__, static_url_path = "", static_folder = "static")
 room_status = {"0" : {"0" : ""}} # yyyy-MM-dd HH:mm:ss
 def newBrainId():
@@ -43,7 +44,7 @@ def showBrain(room_id):
         user_id = request.form['user_id']
         DataURL = request.form['DataURL'] # datauri = 'data:image/png;base64,iVBORw0K...'
         ImageData = base64.b64decode(re.search(r'base64,(.*)', DataURL).group(1).encode())
-        with open('static\\room\\' + room_id + '_' + user_id + '.png', 'wb') as output:
+        with open(os.path.join('static', 'room', room_id + '_' + user_id + '.png'), 'wb') as output:
             output.write(ImageData)
         if not room_id in room_status:
             room_status[room_id] = {}
