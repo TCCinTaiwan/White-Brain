@@ -15,14 +15,15 @@
         <meta http-equiv="X-UA-Compatible" content="chrome=1">
 
         <title>Write's Brain</title>
+
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.min.css') }}">
 		<link rel='icon' type='image/png' href="{{ url_for('static', filename='favicon.png') }}">
 	</head>
 	<body>
-		Hi, welcome to Write's Brain!!
-        <br/><a href='/b'>Go to 隨機房間!!</a>
-		<br/><a href='/b/test'>Go to 測試版!!</a>
-        <br/><a href='/b_status/test'>Go to 測試版JSON資訊!!</a>
-		<br/><a href='/b_view/test'>Go to 測試版[唯讀]!!</a>
-        <br/><a href='https://github.com/TCCinTaiwan/White-Brain'>Github</a>
+		Hi, welcome to Write's Brain!!<br/>
+        <i class="fa fa-random"></i> <a href='/b'>隨機房間</a><br/>
+		<i class="fa fa-eye"></i> <a href='/b_view/'>隨機房間[唯讀]</a><br/>
+        <i class="fa fa-info-circle"></i> <a href='/b_status/'>隨機房間JSON資訊</a><br/>
+        <i class="fa fa-github"></i> <a href='https://github.com/TCCinTaiwan/White-Brain'>Github</a>
 	</body>
 </html>

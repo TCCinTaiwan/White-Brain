@@ -88,17 +88,26 @@
         <canvas id="canvas">你的瀏覽器不支援Canvas。</canvas>
         <!-- <canvas id="canvas2">你的瀏覽器不支援Canvas。</canvas> -->
         <div id="contextMenu">
-            <div id="changemode" class=""><i class="fa fa-mouse-pointer"></i><!-- 模式: 正常 --></div>
-            <div id="changeshape" class=""><i class="fa fa-pencil"></i><!-- 形狀: 畫筆 --></div>
-            <div id="changewidth">寬度</div>
+            <div id="changemode" class="">
+                <i class="fa fa-mouse-pointer"></i><!-- 模式: 正常 -->
+            </div>
+            <div id="changeshape" class="">
+                <i class="fa fa-pencil"></i><!-- 形狀: 畫筆 -->
+            </div>
+            <div id="changewidth">
+                <i class="fa fa-circle"></i> 寬度
+            </div>
             <div id="changestrokestyle" class="input-group">
                 <span class="input-group-addon" style="display: inline;padding: 0 0;"><i style="width: 56px;"></i></span>
             </div>
             <div id="changefillstyle" class="input-group">
                 <span class="input-group-addon" style="display: inline;padding: 0 0;"><i style="width: 56px;"></i></span>
             </div>
-            <div id="clear">清空</div>
-            <div id="changeroom">更換房間</div>
+            <div id="clear">
+                <i class="fa fa-ban"></i> 清空
+            </div>
+            <div id="changeroom"><i class="fa fa-exchange"></i>
+換房</div>
         </div>
         <div id="preview"></div>
         <script>
@@ -185,7 +194,6 @@
                     preview.style.strokeStyle = e.color.toRGB();
                     // console.log(e.color.toRGB(), e.color.toHex(), e.color.toHSL());
                 });
-
                 uid = {{ user_id }};
                 resize();
                 initCanvas();

@@ -17,7 +17,8 @@ function initCanvas() {
     clearCanvas();
     var img = new Image();
     map.onerror = function() { // No Image(404)
-        this.hide();
+        console.log('等不到天黑');
+        this.src = '/img/transparent.png';
     };
     map.onload = function imgLoadHander() {
         context.drawImage(map, 0, 0); // Or at whatever offset you like
@@ -96,7 +97,8 @@ document.onmousedown = function MouseDownHandler(e) {
         if (contextMenu.style.display == "block" && (e.path.indexOf(contextMenu) > -1 && e.toElement.tagName != 'I' || e.toElement == canvas)) { // 選單取消
             contextMenu.style.display = "none";
             leftbutton = false; //假如是取消選單就不執行左鍵
-        } else if ((e.toElement == canvas)) {
+        }
+        if ((e.toElement == canvas)) {
             startpoint.x = e.clientX;
             startpoint.y = e.clientY;
             startpoint = {
@@ -154,7 +156,7 @@ document.onmousemove = function MouseMoveHandler(e) {
 document.onmouseup = function MouseUpHandler(e) {
     e = FireFoxEvent(e || window.event);
     console.log('滑鼠放開%O', e);
-    if (e.button == 0 && leftbutton) {
+    if ((e.button == 0) && leftbutton) {
         leftbutton = false;
         if (shape == 0) {
             context.lineTo(e.clientX, e.clientY);
@@ -233,7 +235,8 @@ function upload() {
         type: 'POST',
         success: function _uploadsuccess(response) {
             console.log('上傳成功!!' + response);
-            initCanvas();
+            // initCanvas();
+            map.src = '/room/' + rid + '_' + uid + '.png?' + new Date().getTime();
         },
         error: function _uploaderror(error) {
             console.log('上傳錯誤:' + error);
