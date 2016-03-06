@@ -10,7 +10,11 @@ import re
 from datetime import datetime
 import platform
 app = Flask(__name__, static_url_path = "", static_folder = "static")
-room_status = {"0" : {"0" : ""}} # yyyy-MM-dd HH:mm:ss
+room_status = {"test" : {"0" : ""}} # yyyy-MM-dd HH:mm:ss
+
+def randomBrainId():
+    room_id = random.choice(list(room_status.keys()))
+    return str(room_id)
 def newBrainId():
     room_id = ''
     while room_id == '' or room_id in room_status:
@@ -58,9 +62,9 @@ def showBrain(room_id):
         return render_template('brain.htm', user_id = user_id)
 @app.route('/b_status/') # 隨機房間[房間狀態]
 def randomBrainStatus():
-    room_id = newBrainId()
+    room_id = randomBrainId()
     app.logger.info('randomBrainStatus{ip:' + request.remote_addr + ', rid:' + room_id + '}')
-    return redirect("/b_status/"+ room_id)
+    return redirect("/b_status/" + room_id)
 @app.route('/b_status/<room_id>', methods = ["POST", "GET"]) # 房間狀態
 def showBrainStatus(room_id):
     if request.method == "POST":
