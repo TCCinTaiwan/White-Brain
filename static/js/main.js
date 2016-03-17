@@ -17,7 +17,6 @@ function initCanvas() {
     clearCanvas();
     var img = new Image();
     map.onerror = function() { // No Image(404)
-        console.log('等不到天黑');
         this.src = '/img/transparent.png';
     };
     map.onload = function imgLoadHander() {
